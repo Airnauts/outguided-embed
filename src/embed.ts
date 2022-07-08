@@ -1,4 +1,5 @@
 import { getEmbedUrl, getExternalUrl, hostLink, tripLink } from './config/Routes'
+import { EmbedMessage, EmbedSizeMessage } from './types'
 declare global {
     interface Window {
         OGWidgets: {
@@ -8,11 +9,7 @@ declare global {
 }
 
 ;(function (window) {
-    window.OGWidgets = window.OGWidgets || {}
-    if (typeof window.OGWidgets.init === 'function') {
-        return
-    }
-    window.OGWidgets.init = () => {
+    window.onload = () => {
         const elements = document.querySelectorAll(
             '[data-og-widget]:not([data-og-initialized])'
         ) as NodeListOf<HTMLElement>
@@ -32,34 +29,37 @@ declare global {
                     url = ogGuide && getEmbedUrl(hostLink(ogGuide))
                     break
             }
+
             if (!url) {
                 return
             }
 
             const href = element.getAttribute('href')
             if (!href?.startsWith(getExternalUrl())) {
-                console.log('external link dont match: ', href?.startsWith(getExternalUrl()))
                 return
             }
 
-            var iframe = document.createElement('iframe')
+            const iframe = document.createElement('iframe')
             iframe.src = url
             iframe.style.border = 'none'
             iframe.style.overflowX = 'hidden'
             iframe.style.overflowY = 'hidden'
             iframe.style.display = 'block'
-  
+
             window?.addEventListener(
                 'message',
                 (event) => {
-                    console.log(event)
                     if (getEmbedUrl().startsWith(event.origin)) {
-                        const { width, height } = event.data
-                        if (height) {
-                            iframe.style.height = height + 'px'
-                        }
-                        if (width) {
-                            iframe.style.width = width + 'px'
+                        const { type } = event.data as EmbedMessage
+                        switch (type) {
+                            case 'size':
+                                const { width, height } = event.data as EmbedSizeMessage
+                                iframe.style.height = height + 'px'
+                                iframe.style.width = width + 'px'
+                                break
+                            case 'other':
+                                console.log('other event')
+                                break
                         }
                     }
                 },

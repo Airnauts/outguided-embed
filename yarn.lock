@@ -2993,6 +2993,11 @@ hmac-drbg@^1.0.1:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
 
+hooks@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/hooks/-/hooks-0.3.2.tgz#a31f060c2026cea6cf1ca3eb178430e718e1c4a3"
+  integrity sha512-TqeFzUf12rSzcbm5lUls81jimUC8TmXZ4ANPxxeeMou09hrjBcHYhAQ0WgyN5YqNCXOzz7L6xVNl/+ctFuSeOw==
+
 hsl-regex@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/hsl-regex/-/hsl-regex-1.0.0.tgz#d49330c789ed819e276a4c0d272dffa30b18fe6e"

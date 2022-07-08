@@ -13,9 +13,6 @@ const App = () => (
         <Route component={HostPage} path={getEmbedPath(HOST_PAGE)} />
         <Route
             component={() => {
-                useEffect(() => {
-                    window.OGWidgets.init()
-                }, [])
                 return (
                     <div class="content">
                         <h3>Place this Link inside you page content where you want to show widget</h3>
@@ -26,7 +23,7 @@ const App = () => (
                             dangerouslySetInnerHTML={{
                                 __html: `<a href="https://www.outguided.com" data-og-widget="trip" data-og-trip="123">
                                 powered by outguided.com
-                            </a><script async type="text/javascript" onload="window.OGWidgets.init();" src="${process.env.EMBED_URL}/embed.js"></script>`
+                            </a><script async type="text/javascript" src="${process.env.EMBED_URL}/embed.js"></script>`
                             }}
                         ></textarea>
                         <h4 class="preview__title">Widget preview:</h4>
