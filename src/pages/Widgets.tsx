@@ -57,8 +57,8 @@ export const Widgets: FunctionComponent<{}> = () => {
                 <Fragment>
                     <h3>Place this Link inside you page content where you want to show widget</h3>
                     <textarea
-                        cols={50}
-                        rows={3}
+                        cols={80}
+                        rows={7}
                         dangerouslySetInnerHTML={{
                             __html: `${TripWidget.Snippet({ slug: trip.slug })}${EMBED_SCRIPT}`
                         }}
