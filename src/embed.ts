@@ -51,6 +51,7 @@ declare global {
             window?.addEventListener(
                 'message',
                 (event) => {
+                    console.log(event)
                     if (event.origin === getEmbedUrl()) {
                         const { width, height } = event.data
                         if (height) {
