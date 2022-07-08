@@ -4,7 +4,7 @@ import { getEmbedUrl } from '../config/Routes'
 export const usePostMessage = () => {
     const send = useCallback(
         (data: any) => {
-            window.postMessage(data, '*')
+            window.parent.postMessage(data, '*')
         },
         [window.parent]
     )
