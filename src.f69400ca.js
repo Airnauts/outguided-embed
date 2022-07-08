@@ -1834,11 +1834,9 @@ exports.usePostMessage = void 0;
 
 var _hooks = require("preact/hooks");
 
-var _Routes = require("../config/Routes");
-
 var usePostMessage = function usePostMessage() {
   var send = (0, _hooks.useCallback)(function (data) {
-    window.postMessage(data, (0, _Routes.getEmbedUrl)());
+    window.postMessage(data, '*');
   }, [window.parent]);
   return {
     send: send
@@ -1846,7 +1844,7 @@ var usePostMessage = function usePostMessage() {
 };
 
 exports.usePostMessage = usePostMessage;
-},{"preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","../config/Routes":"config/Routes.ts"}],"components/Button/Button.tsx":[function(require,module,exports) {
+},{"preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js"}],"components/Button/Button.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2090,7 +2088,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58560" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60048" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
