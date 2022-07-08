@@ -40,8 +40,21 @@ body {
     border: 1px dashed #ddd;
     background: repeating-linear-gradient(45deg, #fbfbfb, #fbfbfb 10px, #f3f3f3 10px, #f3f3f3 20px);
     padding: 30px;
-    &__titie{
-        color:#ddd;
+    &__titie {
+        color: #ddd;
         font-size: 22px;
     }
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+}
+label {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+input {
+    margin-bottom: 10px;
 }

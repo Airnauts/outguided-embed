@@ -12,6 +12,7 @@ export const Widgets: FunctionComponent<{}> = () => {
     const [trip, setTrip] = useState<{ [key: string]: any }>()
 
     const fetchTrip = async (url: string) => {
+        setTrip(undefined);
         const parts = url.split('/')
         if (parts.length) {
             try {
@@ -31,7 +32,10 @@ export const Widgets: FunctionComponent<{}> = () => {
             }
         }
     }
-
+    const onSubmit = (e)=>{
+        e.preventDefault();
+        fetchTrip(tripUrl)
+    }
     useEffect(() => {
         window.OGWidgets.init()
     }, [trip])
@@ -39,14 +43,16 @@ export const Widgets: FunctionComponent<{}> = () => {
     return (
         <div class="content">
             <h3>Enter experience URL:</h3>
-            <label for="tripUrl"></label>
-            <input
-                id="tripUrl"
-                placeholder="Enter Trip Url from outguided.com"
-                value={tripUrl}
-                onChange={({ target }) => setTripUrl((target as HTMLInputElement)?.value)}
-            ></input>
-            {tripUrl && <Button onClick={() => fetchTrip(tripUrl)}>Fetch Trips Details</Button>}
+            <form class="form" onSubmit={onSubmit}>
+                <label for="tripUrl">Trip URL:</label>
+                <input
+                    id="tripUrl"
+                    placeholder="Enter Trip Url from outguided.com"
+                    value={tripUrl}
+                    onChange={({ target }) => setTripUrl((target as HTMLInputElement)?.value)}
+                ></input>
+                {tripUrl && <Button>Fetch Trips Details</Button>}
+            </form>
             {trip && (
                 <Fragment>
                     <h3>Place this Link inside you page content where you want to show widget</h3>
