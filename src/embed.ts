@@ -6,13 +6,13 @@ declare global {
         }
     }
 }
+
 ;(function (window) {
-    //body of the function
-
     window.OGWidgets = window.OGWidgets || {}
-
+    if (typeof window.OGWidgets.init === 'function') {
+        return
+    }
     window.OGWidgets.init = () => {
-        console.log('init widget')
         const elements = document.querySelectorAll(
             '[data-og-widget]:not([data-og-initialized])'
         ) as NodeListOf<HTMLElement>
@@ -35,32 +35,36 @@ declare global {
             if (!url) {
                 return
             }
-            console.log(url)
+
             const href = element.getAttribute('href')
             if (!href?.startsWith(getExternalUrl())) {
                 console.log('external link dont match: ', href?.startsWith(getExternalUrl()))
+                return
             }
+
             var iframe = document.createElement('iframe')
             iframe.src = url
             iframe.style.border = 'none'
             iframe.style.overflowX = 'hidden'
             iframe.style.overflowY = 'hidden'
             iframe.style.display = 'block'
-
-            iframe.onload = () => {
-                const height = iframe?.contentWindow?.document.body.scrollHeight
-                const width = iframe?.contentWindow?.document.getElementById('root')?.children[0].scrollWidth
-                if (height) {
-                    iframe.style.height = height + 1 + 'px'
-                }
-                if (width) {
-                    iframe.style.width = width + 3 + 'px'
-                }
-            }
+            window?.addEventListener(
+                'message',
+                (event) => {
+                    if (event.origin === getEmbedUrl()) {
+                        const { width, height } = event.data
+                        if (height) {
+                            iframe.style.height = height + 'px'
+                        }
+                        if (width) {
+                            iframe.style.width = width + 'px'
+                        }
+                    }
+                },
+                false
+            )
             element.after(iframe)
-            element.remove()
+            element.style.display = 'none'
         })
     }
 })(window)
-
-
