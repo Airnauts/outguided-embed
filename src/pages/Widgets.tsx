@@ -12,7 +12,7 @@ export const Widgets: FunctionComponent<{}> = () => {
     const [trip, setTrip] = useState<{ [key: string]: any }>()
 
     const fetchTrip = async (url: string) => {
-        setTrip(undefined);
+        setTrip()
         const parts = url.split('/')
         if (parts.length) {
             try {
@@ -20,9 +20,7 @@ export const Widgets: FunctionComponent<{}> = () => {
                     [key: string]: any
                 }
                 if (result.status === 200) {
-                    console.log()
                     result = await result.json()
-                    console.log(result)
                     if (typeof result === 'object' && result.id) {
                         setTrip(result)
                     }
@@ -32,8 +30,8 @@ export const Widgets: FunctionComponent<{}> = () => {
             }
         }
     }
-    const onSubmit = (e)=>{
-        e.preventDefault();
+    const onSubmit = (e) => {
+        e.preventDefault()
         fetchTrip(tripUrl)
     }
     useEffect(() => {
