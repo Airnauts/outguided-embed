@@ -221,7 +221,7 @@ var _Routes = require("./config/Routes");
       window === null || window === void 0 ? void 0 : window.addEventListener('message', function (event) {
         console.log(event);
 
-        if (event.origin === (0, _Routes.getEmbedUrl)()) {
+        if ((0, _Routes.getEmbedUrl)().startsWith(event.origin)) {
           var _a = event.data,
               width = _a.width,
               height = _a.height;
@@ -268,7 +268,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62184" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62950" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
