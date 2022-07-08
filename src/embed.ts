@@ -1,6 +1,18 @@
-import { getEmbedPath, getExternalLink, hostLink, tripLink } from './config/Routes'
-;(function () {
-    document.addEventListener('DOMContentLoaded', () => {
+import { getEmbedUrl, getExternalUrl, hostLink, tripLink } from './config/Routes'
+declare global {
+    interface Window {
+        OGWidgets: {
+            init: () => void
+        }
+    }
+}
+;(function (window) {
+    //body of the function
+
+    window.OGWidgets = window.OGWidgets || {}
+
+    window.OGWidgets.init = () => {
+        console.log('init widget')
         const elements = document.querySelectorAll(
             '[data-og-widget]:not([data-og-initialized])'
         ) as NodeListOf<HTMLElement>
@@ -14,10 +26,10 @@ import { getEmbedPath, getExternalLink, hostLink, tripLink } from './config/Rout
             let url
             switch (ogWidget) {
                 case 'trip':
-                    url = ogTrip && getExternalLink(getEmbedPath(tripLink(ogTrip)))
+                    url = ogTrip && getEmbedUrl(tripLink(ogTrip))
                     break
                 case 'guide':
-                    url = ogGuide && getExternalLink(getEmbedPath(hostLink(ogGuide)))
+                    url = ogGuide && getEmbedUrl(hostLink(ogGuide))
                     break
             }
             if (!url) {
@@ -25,8 +37,8 @@ import { getEmbedPath, getExternalLink, hostLink, tripLink } from './config/Rout
             }
             console.log(url)
             const href = element.getAttribute('href')
-            if (!href?.startsWith(getExternalLink())) {
-                console.log('external link dont match: ', href?.startsWith(getExternalLink()))
+            if (!href?.startsWith(getExternalUrl())) {
+                console.log('external link dont match: ', href?.startsWith(getExternalUrl()))
             }
             var iframe = document.createElement('iframe')
             iframe.src = url
@@ -48,5 +60,7 @@ import { getEmbedPath, getExternalLink, hostLink, tripLink } from './config/Rout
             element.after(iframe)
             element.remove()
         })
-    })
-})()
+    }
+})(window)
+
+
