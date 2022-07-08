@@ -52,7 +52,7 @@ declare global {
                 'message',
                 (event) => {
                     console.log(event)
-                    if (event.origin === getEmbedUrl()) {
+                    if (getEmbedUrl().startsWith(event.origin)) {
                         const { width, height } = event.data
                         if (height) {
                             iframe.style.height = height + 'px'
