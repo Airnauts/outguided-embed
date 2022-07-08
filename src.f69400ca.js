@@ -1810,7 +1810,7 @@ var getEmbedPath = function getEmbedPath(path) {
 exports.getEmbedPath = getEmbedPath;
 
 var getEmbedUrl = function getEmbedUrl(path) {
-  return "".concat("http://localhost:1234", "/#").concat(getEmbedPath(path));
+  return "".concat("http://localhost:1234").concat(path ? "/#".concat(getEmbedPath(path)) : '');
 };
 
 exports.getEmbedUrl = getEmbedUrl;
@@ -1824,7 +1824,31 @@ var getExternalUrl = function getExternalUrl(path) {
 };
 
 exports.getExternalUrl = getExternalUrl;
-},{}],"components/Button/Button.tsx":[function(require,module,exports) {
+},{}],"hooks/usePostMessage.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.usePostMessage = void 0;
+
+var _hooks = require("preact/hooks");
+
+var _Routes = require("../config/Routes");
+
+var usePostMessage = function usePostMessage() {
+  var send = (0, _hooks.useCallback)(function (data) {
+    var _a;
+
+    (_a = window.parent) === null || _a === void 0 ? void 0 : _a.postMessage(data, (0, _Routes.getEmbedUrl)());
+  }, [window.parent]);
+  return {
+    send: send
+  };
+};
+
+exports.usePostMessage = usePostMessage;
+},{"preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","../config/Routes":"config/Routes.ts"}],"components/Button/Button.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1855,19 +1879,44 @@ exports.TripPage = void 0;
 
 var _preact = require("preact");
 
+var _hooks = require("preact/hooks");
+
+var _usePostMessage = require("../hooks/usePostMessage");
+
 var _Button = require("../components/Button/Button");
 
 var _Routes = require("../config/Routes");
 
 var TripPage = function TripPage(_a) {
   var slug = _a.matches.slug;
+  var send = (0, _usePostMessage.usePostMessage)().send;
+  (0, _hooks.useEffect)(function () {
+    var _a;
+
+    var height = document === null || document === void 0 ? void 0 : document.body.scrollHeight;
+    var width = (_a = document === null || document === void 0 ? void 0 : document.getElementById('root')) === null || _a === void 0 ? void 0 : _a.children[0].scrollWidth;
+    var dimensions = {
+      height: height,
+      width: width
+    };
+
+    if (height) {
+      dimensions.height = height + 1;
+    }
+
+    if (width) {
+      dimensions.width = width + 3;
+    }
+
+    send(dimensions);
+  }, [send]);
   return (0, _preact.h)(_Button.Button, {
     href: (0, _Routes.getExternalUrl)((0, _Routes.tripLink)(slug))
   }, "Book Now");
 };
 
 exports.TripPage = TripPage;
-},{"preact":"../node_modules/preact/dist/preact.module.js","../components/Button/Button":"components/Button/Button.tsx","../config/Routes":"config/Routes.ts"}],"pages/HostPage.tsx":[function(require,module,exports) {
+},{"preact":"../node_modules/preact/dist/preact.module.js","preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","../hooks/usePostMessage":"hooks/usePostMessage.ts","../components/Button/Button":"components/Button/Button.tsx","../config/Routes":"config/Routes.ts"}],"pages/HostPage.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2043,7 +2092,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56625" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60890" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

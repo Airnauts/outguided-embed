@@ -148,7 +148,7 @@ var getEmbedPath = function getEmbedPath(path) {
 exports.getEmbedPath = getEmbedPath;
 
 var getEmbedUrl = function getEmbedUrl(path) {
-  return "".concat("http://localhost:1234", "/#").concat(getEmbedPath(path));
+  return "".concat("http://localhost:1234").concat(path ? "/#".concat(getEmbedPath(path)) : '');
 };
 
 exports.getEmbedUrl = getEmbedUrl;
@@ -170,11 +170,13 @@ var _Routes = require("./config/Routes");
 ;
 
 (function (window) {
-  //body of the function
   window.OGWidgets = window.OGWidgets || {};
 
+  if (typeof window.OGWidgets.init === 'function') {
+    return;
+  }
+
   window.OGWidgets.init = function () {
-    console.log('init widget');
     var elements = document.querySelectorAll('[data-og-widget]:not([data-og-initialized])');
     elements.forEach(function (element) {
       element.setAttribute('data-og-initialized', '1');
@@ -203,11 +205,11 @@ var _Routes = require("./config/Routes");
         return;
       }
 
-      console.log(url);
       var href = element.getAttribute('href');
 
       if (!(href === null || href === void 0 ? void 0 : href.startsWith((0, _Routes.getExternalUrl)()))) {
         console.log('external link dont match: ', href === null || href === void 0 ? void 0 : href.startsWith((0, _Routes.getExternalUrl)()));
+        return;
       }
 
       var iframe = document.createElement('iframe');
@@ -216,24 +218,23 @@ var _Routes = require("./config/Routes");
       iframe.style.overflowX = 'hidden';
       iframe.style.overflowY = 'hidden';
       iframe.style.display = 'block';
+      window === null || window === void 0 ? void 0 : window.addEventListener('message', function (event) {
+        if (event.origin === (0, _Routes.getEmbedUrl)()) {
+          var _a = event.data,
+              width = _a.width,
+              height = _a.height;
 
-      iframe.onload = function () {
-        var _a, _b, _c;
+          if (height) {
+            iframe.style.height = height + 'px';
+          }
 
-        var height = (_a = iframe === null || iframe === void 0 ? void 0 : iframe.contentWindow) === null || _a === void 0 ? void 0 : _a.document.body.scrollHeight;
-        var width = (_c = (_b = iframe === null || iframe === void 0 ? void 0 : iframe.contentWindow) === null || _b === void 0 ? void 0 : _b.document.getElementById('root')) === null || _c === void 0 ? void 0 : _c.children[0].scrollWidth;
-
-        if (height) {
-          iframe.style.height = height + 1 + 'px';
+          if (width) {
+            iframe.style.width = width + 'px';
+          }
         }
-
-        if (width) {
-          iframe.style.width = width + 3 + 'px';
-        }
-      };
-
+      }, false);
       element.after(iframe);
-      element.remove();
+      element.style.display = 'none';
     });
   };
 })(window);
@@ -265,7 +266,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56625" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60890" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
