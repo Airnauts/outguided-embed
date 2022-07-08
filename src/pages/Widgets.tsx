@@ -12,7 +12,7 @@ export const Widgets: FunctionComponent<{}> = () => {
     const [trip, setTrip] = useState<{ [key: string]: any }>()
 
     const fetchTrip = async (url: string) => {
-        setTrip()
+        setTrip(undefined)
         const parts = url.split('/')
         if (parts.length) {
             try {
