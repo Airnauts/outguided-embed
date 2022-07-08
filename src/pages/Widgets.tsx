@@ -1,0 +1,69 @@
+import { Fragment, h } from 'preact'
+import { FunctionComponent } from 'preact'
+import { useEffect, useState } from 'preact/hooks'
+import { Button } from 'src/components/Button/Button'
+import { TripWidget } from 'src/widgets/TripWidget'
+const EMBED_SCRIPT = `<script async type="text/javascript" src="${process.env.EMBED_URL}/embed.js"></script>`
+const EXAMPLE_SLUG = 'test-trip'
+export const Widgets: FunctionComponent<{}> = () => {
+    const [tripUrl, setTripUrl] = useState<string>(
+        'https://www.outguided.com/experiences/24-hours-in-browns-canyon-deluxe-overnight-camping-experience-like-nothing-out-there-granite'
+    )
+    const [trip, setTrip] = useState<{ [key: string]: any }>()
+
+    const fetchTrip = async (url: string) => {
+        const parts = url.split('/')
+        if (parts.length) {
+            try {
+                let result = (await fetch(`${process.env.BACKEND_URL}/marketing-pages/slug/${parts.slice(-1)[0]}`)) as {
+                    [key: string]: any
+                }
+                if (result.status === 200) {
+                    console.log()
+                    result = await result.json()
+                    console.log(result)
+                    if (typeof result === 'object' && result.id) {
+                        setTrip(result)
+                    }
+                }
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    }
+
+    useEffect(() => {
+        window.OGWidgets.init()
+    }, [trip])
+
+    return (
+        <div class="content">
+            <h3>Enter experience URL:</h3>
+            <label for="tripUrl"></label>
+            <input
+                id="tripUrl"
+                placeholder="Enter Trip Url from outguided.com"
+                value={tripUrl}
+                onChange={({ target }) => setTripUrl((target as HTMLInputElement)?.value)}
+            ></input>
+            {tripUrl && <Button onClick={() => fetchTrip(tripUrl)}>Fetch Trips Details</Button>}
+            {trip && (
+                <Fragment>
+                    <h3>Place this Link inside you page content where you want to show widget</h3>
+                    <textarea
+                        cols={50}
+                        rows={3}
+                        dangerouslySetInnerHTML={{
+                            __html: `${TripWidget.Snippet({ slug: trip.slug })}${EMBED_SCRIPT}`
+                        }}
+                    ></textarea>
+                    <h4 class="preview__title">Widget preview:</h4>
+                    <div
+                        class="preview"
+                        dangerouslySetInnerHTML={{ __html: TripWidget.Snippet({ slug: trip.slug }) }}
+                    />
+                </Fragment>
+            )}
+        </div>
+    )
+}

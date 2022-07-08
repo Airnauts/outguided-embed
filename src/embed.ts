@@ -9,7 +9,8 @@ declare global {
 }
 
 ;(function (window) {
-    window.onload = () => {
+    window.OGWidgets = window.OGWidgets || {}
+    window.OGWidgets.init = () => {
         const elements = document.querySelectorAll(
             '[data-og-widget]:not([data-og-initialized])'
         ) as NodeListOf<HTMLElement>
@@ -69,4 +70,5 @@ declare global {
             element.style.display = 'none'
         })
     }
+    window.onload = window.OGWidgets.init
 })(window)
