@@ -218,29 +218,23 @@ var _Routes = require("./config/Routes");
       iframe.style.overflowX = 'hidden';
       iframe.style.overflowY = 'hidden';
       iframe.style.display = 'block';
+      window === null || window === void 0 ? void 0 : window.addEventListener('message', function (event) {
+        console.log(event);
 
-      iframe.onload = function () {
-        var _a;
+        if ((0, _Routes.getEmbedUrl)().startsWith(event.origin)) {
+          var _a = event.data,
+              width = _a.width,
+              height = _a.height;
 
-        (_a = iframe.contentWindow) === null || _a === void 0 ? void 0 : _a.addEventListener('message', function (event) {
-          console.log(event);
-
-          if ((0, _Routes.getEmbedUrl)().startsWith(event.origin)) {
-            var _a = event.data,
-                width = _a.width,
-                height = _a.height;
-
-            if (height) {
-              iframe.style.height = height + 'px';
-            }
-
-            if (width) {
-              iframe.style.width = width + 'px';
-            }
+          if (height) {
+            iframe.style.height = height + 'px';
           }
-        }, false);
-      };
 
+          if (width) {
+            iframe.style.width = width + 'px';
+          }
+        }
+      }, false);
       element.after(iframe);
       element.style.display = 'none';
     });
@@ -274,7 +268,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60048" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60480" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

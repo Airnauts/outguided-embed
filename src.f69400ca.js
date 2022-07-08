@@ -1836,7 +1836,7 @@ var _hooks = require("preact/hooks");
 
 var usePostMessage = function usePostMessage() {
   var send = (0, _hooks.useCallback)(function (data) {
-    window.postMessage(data, '*');
+    window.parent.postMessage(data, '*');
   }, [window.parent]);
   return {
     send: send
@@ -2088,7 +2088,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60048" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60480" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
