@@ -2260,14 +2260,12 @@ var Widgets = function Widgets() {
             if (!(result.status === 200)) return [3
             /*break*/
             , 4];
-            console.log();
             return [4
             /*yield*/
             , result.json()];
 
           case 3:
             result = _a.sent();
-            console.log(result);
 
             if (_typeof(result) === 'object' && result.id) {
               setTrip(result);
@@ -2404,7 +2402,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50275" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54977" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
