@@ -219,6 +219,8 @@ var _Routes = require("./config/Routes");
       iframe.style.overflowY = 'hidden';
       iframe.style.display = 'block';
       window === null || window === void 0 ? void 0 : window.addEventListener('message', function (event) {
+        console.log(event);
+
         if (event.origin === (0, _Routes.getEmbedUrl)()) {
           var _a = event.data,
               width = _a.width,
@@ -266,7 +268,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60890" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62184" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
