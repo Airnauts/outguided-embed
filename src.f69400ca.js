@@ -1836,11 +1836,14 @@ var _preact = require("preact");
 
 var Button = function Button(_a) {
   var href = _a.href,
-      children = _a.children;
-  return (0, _preact.h)("a", {
+      children = _a.children,
+      onClick = _a.onClick;
+  var Component = href ? 'a' : 'button';
+  return (0, _preact.h)(Component, {
     className: 'button',
     href: href,
-    target: "_blank"
+    target: href ? '_blank' : undefined,
+    onClick: onClick
   }, children);
 };
 
@@ -1939,13 +1942,13 @@ var Widget = function Widget(_a) {
 };
 
 exports.Widget = Widget;
-},{"preact":"../node_modules/preact/dist/preact.module.js","preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","src/hooks/usePostMessage":"hooks/usePostMessage.ts","src/hooks/useEmbedSize":"hooks/useEmbedSize.ts"}],"pages/TripPage.tsx":[function(require,module,exports) {
+},{"preact":"../node_modules/preact/dist/preact.module.js","preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","src/hooks/usePostMessage":"hooks/usePostMessage.ts","src/hooks/useEmbedSize":"hooks/useEmbedSize.ts"}],"widgets/TripWidget.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.TripPage = void 0;
+exports.TripWidget = void 0;
 
 var _preact = require("preact");
 
@@ -1955,6 +1958,11 @@ var _Routes = require("src/config/Routes");
 
 var _Widget = require("src/components/Widget/Widget");
 
+var Snippet = function Snippet(_a) {
+  var slug = _a.slug;
+  return "<a href=\"https://www.outguided.com\" data-og-widget=\"trip\" data-og-trip=".concat(slug, " style=\"text-decoration:none;color:#333;font-size:15px;font-family:Verdana;\">Powered by outguided.com</a>");
+};
+
 var TripPage = function TripPage(_a) {
   var slug = _a.matches.slug;
   return (0, _preact.h)(_Widget.Widget, null, (0, _preact.h)(_Button.Button, {
@@ -1962,8 +1970,11 @@ var TripPage = function TripPage(_a) {
   }, "Book Now"));
 };
 
-exports.TripPage = TripPage;
-},{"preact":"../node_modules/preact/dist/preact.module.js","src/components/Button/Button":"components/Button/Button.tsx","src/config/Routes":"config/Routes.ts","src/components/Widget/Widget":"components/Widget/Widget.tsx"}],"pages/HostPage.tsx":[function(require,module,exports) {
+var TripWidget = Object.assign(TripPage, {
+  Snippet: Snippet
+});
+exports.TripWidget = TripWidget;
+},{"preact":"../node_modules/preact/dist/preact.module.js","src/components/Button/Button":"components/Button/Button.tsx","src/config/Routes":"config/Routes.ts","src/components/Widget/Widget":"components/Widget/Widget.tsx"}],"widgets/HostPage.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2051,7 +2062,285 @@ var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"index.tsx":[function(require,module,exports) {
+},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"pages/Widgets.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Widgets = void 0;
+
+var _preact = require("preact");
+
+var _hooks = require("preact/hooks");
+
+var _Button = require("src/components/Button/Button");
+
+var _TripWidget = require("src/widgets/TripWidget");
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+
+var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
+  var _ = {
+    label: 0,
+    sent: function sent() {
+      if (t[0] & 1) throw t[1];
+      return t[1];
+    },
+    trys: [],
+    ops: []
+  },
+      f,
+      y,
+      t,
+      g;
+  return g = {
+    next: verb(0),
+    "throw": verb(1),
+    "return": verb(2)
+  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+    return this;
+  }), g;
+
+  function verb(n) {
+    return function (v) {
+      return step([n, v]);
+    };
+  }
+
+  function step(op) {
+    if (f) throw new TypeError("Generator is already executing.");
+
+    while (_) {
+      try {
+        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+        if (y = 0, t) op = [op[0] & 2, t.value];
+
+        switch (op[0]) {
+          case 0:
+          case 1:
+            t = op;
+            break;
+
+          case 4:
+            _.label++;
+            return {
+              value: op[1],
+              done: false
+            };
+
+          case 5:
+            _.label++;
+            y = op[1];
+            op = [0];
+            continue;
+
+          case 7:
+            op = _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+
+          default:
+            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+              _ = 0;
+              continue;
+            }
+
+            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+              _.label = op[1];
+              break;
+            }
+
+            if (op[0] === 6 && _.label < t[1]) {
+              _.label = t[1];
+              t = op;
+              break;
+            }
+
+            if (t && _.label < t[2]) {
+              _.label = t[2];
+
+              _.ops.push(op);
+
+              break;
+            }
+
+            if (t[2]) _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+        }
+
+        op = body.call(thisArg, _);
+      } catch (e) {
+        op = [6, e];
+        y = 0;
+      } finally {
+        f = t = 0;
+      }
+    }
+
+    if (op[0] & 5) throw op[1];
+    return {
+      value: op[0] ? op[1] : void 0,
+      done: true
+    };
+  }
+};
+
+var EMBED_SCRIPT = "<script async type=\"text/javascript\" src=\"".concat("http://localhost:1234", "/embed.js\"></script>");
+var EXAMPLE_SLUG = 'test-trip';
+
+var Widgets = function Widgets() {
+  var _a = (0, _hooks.useState)('https://www.outguided.com/experiences/24-hours-in-browns-canyon-deluxe-overnight-camping-experience-like-nothing-out-there-granite'),
+      tripUrl = _a[0],
+      setTripUrl = _a[1];
+
+  var _b = (0, _hooks.useState)(),
+      trip = _b[0],
+      setTrip = _b[1];
+
+  var fetchTrip = function fetchTrip(url) {
+    return __awaiter(void 0, void 0, void 0, function () {
+      var parts, result, e_1;
+      return __generator(this, function (_a) {
+        switch (_a.label) {
+          case 0:
+            setTrip(undefined);
+            parts = url.split('/');
+            if (!parts.length) return [3
+            /*break*/
+            , 6];
+            _a.label = 1;
+
+          case 1:
+            _a.trys.push([1, 5,, 6]);
+
+            return [4
+            /*yield*/
+            , fetch("".concat("https://outguided-api-production.herokuapp.com", "/marketing-pages/slug/").concat(parts.slice(-1)[0]))];
+
+          case 2:
+            result = _a.sent();
+            if (!(result.status === 200)) return [3
+            /*break*/
+            , 4];
+            console.log();
+            return [4
+            /*yield*/
+            , result.json()];
+
+          case 3:
+            result = _a.sent();
+            console.log(result);
+
+            if (_typeof(result) === 'object' && result.id) {
+              setTrip(result);
+            }
+
+            _a.label = 4;
+
+          case 4:
+            return [3
+            /*break*/
+            , 6];
+
+          case 5:
+            e_1 = _a.sent();
+            console.log(e_1);
+            return [3
+            /*break*/
+            , 6];
+
+          case 6:
+            return [2
+            /*return*/
+            ];
+        }
+      });
+    });
+  };
+
+  var onSubmit = function onSubmit(e) {
+    e.preventDefault();
+    fetchTrip(tripUrl);
+  };
+
+  (0, _hooks.useEffect)(function () {
+    window.OGWidgets.init();
+  }, [trip]);
+  return (0, _preact.h)("div", {
+    class: "content"
+  }, (0, _preact.h)("h3", null, "Enter experience URL:"), (0, _preact.h)("form", {
+    class: "form",
+    onSubmit: onSubmit
+  }, (0, _preact.h)("label", {
+    for: "tripUrl"
+  }, "Trip URL:"), (0, _preact.h)("input", {
+    id: "tripUrl",
+    placeholder: "Enter Trip Url from outguided.com",
+    value: tripUrl,
+    onChange: function onChange(_a) {
+      var target = _a.target;
+      return setTripUrl(target === null || target === void 0 ? void 0 : target.value);
+    }
+  }), tripUrl && (0, _preact.h)(_Button.Button, null, "Fetch Trips Details")), trip && (0, _preact.h)(_preact.Fragment, null, (0, _preact.h)("h3", null, "Place this Link inside you page content where you want to show widget"), (0, _preact.h)("textarea", {
+    cols: 80,
+    rows: 7,
+    dangerouslySetInnerHTML: {
+      __html: "".concat(_TripWidget.TripWidget.Snippet({
+        slug: trip.slug
+      })).concat(EMBED_SCRIPT)
+    }
+  }), (0, _preact.h)("h4", {
+    class: "preview__title"
+  }, "Widget preview:"), (0, _preact.h)("div", {
+    class: "preview",
+    dangerouslySetInnerHTML: {
+      __html: _TripWidget.TripWidget.Snippet({
+        slug: trip.slug
+      })
+    }
+  })));
+};
+
+exports.Widgets = Widgets;
+},{"preact":"../node_modules/preact/dist/preact.module.js","preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","src/components/Button/Button":"components/Button/Button.tsx","src/widgets/TripWidget":"widgets/TripWidget.tsx"}],"index.tsx":[function(require,module,exports) {
 "use strict";
 
 var _preact = require("preact");
@@ -2062,51 +2351,32 @@ var _history = require("history");
 
 var _Routes = require("./config/Routes");
 
-var _TripPage = require("./pages/TripPage");
+var _TripWidget = require("./widgets/TripWidget");
 
-var _HostPage = require("./pages/HostPage");
+var _HostPage = require("./widgets/HostPage");
 
 require("./styles/styles.scss");
 
+var _Widgets = require("./pages/Widgets");
+
 var App = function App() {
-  return (0, _preact.h)(_preactRouter.Router, {
+  return (0, _preact.h)(_preact.Fragment, null, (0, _preact.h)(_preactRouter.Router, {
     history: (0, _history.createHashHistory)()
   }, (0, _preact.h)(_preactRouter.Route, {
-    component: _TripPage.TripPage,
+    component: _TripWidget.TripWidget,
     path: (0, _Routes.getEmbedPath)(_Routes.TRIP_PAGE)
   }), (0, _preact.h)(_preactRouter.Route, {
     component: _HostPage.HostPage,
     path: (0, _Routes.getEmbedPath)(_Routes.HOST_PAGE)
   }), (0, _preact.h)(_preactRouter.Route, {
-    component: function component() {
-      return (0, _preact.h)("div", {
-        class: "content"
-      }, (0, _preact.h)("h3", null, "Place this Link inside you page content where you want to show widget"), (0, _preact.h)("textarea", {
-        cols: 50,
-        rows: 3,
-        onChange: function onChange() {
-          return console.log('onChange');
-        },
-        dangerouslySetInnerHTML: {
-          __html: "<a href=\"https://www.outguided.com\" data-og-widget=\"trip\" data-og-trip=\"123\">\n                                powered by outguided.com\n                            </a><script async type=\"text/javascript\" src=\"".concat("http://localhost:1234", "/embed.js\"></script>")
-        }
-      }), (0, _preact.h)("h4", {
-        class: "preview__title"
-      }, "Widget preview:"), (0, _preact.h)("div", {
-        class: "preview"
-      }, (0, _preact.h)("a", {
-        href: "https://www.outguided.com",
-        "data-og-widget": "trip",
-        "data-og-trip": "123"
-      }, "powered by outguided.com")));
-    },
+    component: _Widgets.Widgets,
     default: true
-  }));
+  })));
 };
 
 var root = document.getElementById('root');
 (0, _preact.render)((0, _preact.h)(App, null), root);
-},{"preact":"../node_modules/preact/dist/preact.module.js","preact-router":"../node_modules/preact-router/dist/preact-router.module.js","history":"../node_modules/history/index.js","./config/Routes":"config/Routes.ts","./pages/TripPage":"pages/TripPage.tsx","./pages/HostPage":"pages/HostPage.tsx","./styles/styles.scss":"styles/styles.scss"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"preact":"../node_modules/preact/dist/preact.module.js","preact-router":"../node_modules/preact-router/dist/preact-router.module.js","history":"../node_modules/history/index.js","./config/Routes":"config/Routes.ts","./widgets/TripWidget":"widgets/TripWidget.tsx","./widgets/HostPage":"widgets/HostPage.tsx","./styles/styles.scss":"styles/styles.scss","./pages/Widgets":"pages/Widgets.tsx"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -2134,7 +2404,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54542" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50275" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

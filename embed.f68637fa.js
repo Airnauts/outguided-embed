@@ -170,7 +170,9 @@ var _Routes = require("./config/Routes");
 ;
 
 (function (window) {
-  window.onload = function () {
+  window.OGWidgets = window.OGWidgets || {};
+
+  window.OGWidgets.init = function () {
     var elements = document.querySelectorAll('[data-og-widget]:not([data-og-initialized])');
     elements.forEach(function (element) {
       element.setAttribute('data-og-initialized', '1');
@@ -234,6 +236,8 @@ var _Routes = require("./config/Routes");
       element.style.display = 'none';
     });
   };
+
+  window.onload = window.OGWidgets.init;
 })(window);
 },{"./config/Routes":"config/Routes.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -263,7 +267,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54542" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50275" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
