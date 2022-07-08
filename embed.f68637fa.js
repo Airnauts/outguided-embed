@@ -170,13 +170,7 @@ var _Routes = require("./config/Routes");
 ;
 
 (function (window) {
-  window.OGWidgets = window.OGWidgets || {};
-
-  if (typeof window.OGWidgets.init === 'function') {
-    return;
-  }
-
-  window.OGWidgets.init = function () {
+  window.onload = function () {
     var elements = document.querySelectorAll('[data-og-widget]:not([data-og-initialized])');
     elements.forEach(function (element) {
       element.setAttribute('data-og-initialized', '1');
@@ -208,7 +202,6 @@ var _Routes = require("./config/Routes");
       var href = element.getAttribute('href');
 
       if (!(href === null || href === void 0 ? void 0 : href.startsWith((0, _Routes.getExternalUrl)()))) {
-        console.log('external link dont match: ', href === null || href === void 0 ? void 0 : href.startsWith((0, _Routes.getExternalUrl)()));
         return;
       }
 
@@ -219,19 +212,21 @@ var _Routes = require("./config/Routes");
       iframe.style.overflowY = 'hidden';
       iframe.style.display = 'block';
       window === null || window === void 0 ? void 0 : window.addEventListener('message', function (event) {
-        console.log(event);
-
         if ((0, _Routes.getEmbedUrl)().startsWith(event.origin)) {
-          var _a = event.data,
-              width = _a.width,
-              height = _a.height;
+          var type = event.data.type;
 
-          if (height) {
-            iframe.style.height = height + 'px';
-          }
+          switch (type) {
+            case 'size':
+              var _a = event.data,
+                  width = _a.width,
+                  height = _a.height;
+              iframe.style.height = height + 'px';
+              iframe.style.width = width + 'px';
+              break;
 
-          if (width) {
-            iframe.style.width = width + 'px';
+            case 'other':
+              console.log('other event');
+              break;
           }
         }
       }, false);
@@ -268,7 +263,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60480" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54542" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

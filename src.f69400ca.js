@@ -1824,27 +1824,7 @@ var getExternalUrl = function getExternalUrl(path) {
 };
 
 exports.getExternalUrl = getExternalUrl;
-},{}],"hooks/usePostMessage.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.usePostMessage = void 0;
-
-var _hooks = require("preact/hooks");
-
-var usePostMessage = function usePostMessage() {
-  var send = (0, _hooks.useCallback)(function (data) {
-    window.parent.postMessage(data, '*');
-  }, [window.parent]);
-  return {
-    send: send
-  };
-};
-
-exports.usePostMessage = usePostMessage;
-},{"preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js"}],"components/Button/Button.tsx":[function(require,module,exports) {
+},{}],"components/Button/Button.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1865,7 +1845,101 @@ var Button = function Button(_a) {
 };
 
 exports.Button = Button;
-},{"preact":"../node_modules/preact/dist/preact.module.js"}],"pages/TripPage.tsx":[function(require,module,exports) {
+},{"preact":"../node_modules/preact/dist/preact.module.js"}],"hooks/usePostMessage.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.usePostMessage = void 0;
+
+var _hooks = require("preact/hooks");
+
+var usePostMessage = function usePostMessage() {
+  var send = (0, _hooks.useCallback)(function (data) {
+    window.parent.postMessage(data, '*');
+  }, [window.parent]);
+  return {
+    send: send
+  };
+};
+
+exports.usePostMessage = usePostMessage;
+},{"preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js"}],"hooks/useEmbedSize.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useEmbedSize = void 0;
+
+var _hooks = require("preact/hooks");
+
+var useEmbedSize = function useEmbedSize() {
+  var _a = (0, _hooks.useState)({
+    width: 0,
+    height: 0
+  }),
+      dimension = _a[0],
+      setDimension = _a[1];
+
+  (0, _hooks.useEffect)(function () {
+    var _a, _b, _c;
+
+    if (!dimension.height && (document === null || document === void 0 ? void 0 : document.body.scrollHeight)) {
+      var height = document === null || document === void 0 ? void 0 : document.body.scrollHeight;
+      var width = (_c = (_b = (_a = document === null || document === void 0 ? void 0 : document.getElementById('root')) === null || _a === void 0 ? void 0 : _a.children) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.scrollWidth;
+
+      if (width && height) {
+        setDimension({
+          width: width + 2,
+          height: height
+        });
+      }
+    }
+  }, [document === null || document === void 0 ? void 0 : document.body.scrollHeight, dimension.height]);
+  return dimension;
+};
+
+exports.useEmbedSize = useEmbedSize;
+},{"preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js"}],"components/Widget/Widget.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Widget = void 0;
+
+var _preact = require("preact");
+
+var _hooks = require("preact/hooks");
+
+var _usePostMessage = require("src/hooks/usePostMessage");
+
+var _useEmbedSize = require("src/hooks/useEmbedSize");
+
+var Widget = function Widget(_a) {
+  var children = _a.children;
+  var send = (0, _usePostMessage.usePostMessage)().send;
+
+  var _b = (0, _useEmbedSize.useEmbedSize)(),
+      width = _b.width,
+      height = _b.height;
+
+  (0, _hooks.useEffect)(function () {
+    if (width && height) {
+      send({
+        type: 'size',
+        width: width,
+        height: height
+      });
+    }
+  }, [send, width, height]);
+  return (0, _preact.h)(_preact.Fragment, null, children);
+};
+
+exports.Widget = Widget;
+},{"preact":"../node_modules/preact/dist/preact.module.js","preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","src/hooks/usePostMessage":"hooks/usePostMessage.ts","src/hooks/useEmbedSize":"hooks/useEmbedSize.ts"}],"pages/TripPage.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1875,44 +1949,21 @@ exports.TripPage = void 0;
 
 var _preact = require("preact");
 
-var _hooks = require("preact/hooks");
+var _Button = require("src/components/Button/Button");
 
-var _usePostMessage = require("../hooks/usePostMessage");
+var _Routes = require("src/config/Routes");
 
-var _Button = require("../components/Button/Button");
-
-var _Routes = require("../config/Routes");
+var _Widget = require("src/components/Widget/Widget");
 
 var TripPage = function TripPage(_a) {
   var slug = _a.matches.slug;
-  var send = (0, _usePostMessage.usePostMessage)().send;
-  (0, _hooks.useEffect)(function () {
-    var _a;
-
-    var height = document === null || document === void 0 ? void 0 : document.body.scrollHeight;
-    var width = (_a = document === null || document === void 0 ? void 0 : document.getElementById('root')) === null || _a === void 0 ? void 0 : _a.children[0].scrollWidth;
-    var dimensions = {
-      height: height,
-      width: width
-    };
-
-    if (height) {
-      dimensions.height = height + 1;
-    }
-
-    if (width) {
-      dimensions.width = width + 3;
-    }
-
-    send(dimensions);
-  }, [send]);
-  return (0, _preact.h)(_Button.Button, {
+  return (0, _preact.h)(_Widget.Widget, null, (0, _preact.h)(_Button.Button, {
     href: (0, _Routes.getExternalUrl)((0, _Routes.tripLink)(slug))
-  }, "Book Now");
+  }, "Book Now"));
 };
 
 exports.TripPage = TripPage;
-},{"preact":"../node_modules/preact/dist/preact.module.js","preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","../hooks/usePostMessage":"hooks/usePostMessage.ts","../components/Button/Button":"components/Button/Button.tsx","../config/Routes":"config/Routes.ts"}],"pages/HostPage.tsx":[function(require,module,exports) {
+},{"preact":"../node_modules/preact/dist/preact.module.js","src/components/Button/Button":"components/Button/Button.tsx","src/config/Routes":"config/Routes.ts","src/components/Widget/Widget":"components/Widget/Widget.tsx"}],"pages/HostPage.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2005,8 +2056,6 @@ module.hot.accept(reloadCSS);
 
 var _preact = require("preact");
 
-var _hooks = require("preact/hooks");
-
 var _preactRouter = require("preact-router");
 
 var _history = require("history");
@@ -2030,9 +2079,6 @@ var App = function App() {
     path: (0, _Routes.getEmbedPath)(_Routes.HOST_PAGE)
   }), (0, _preact.h)(_preactRouter.Route, {
     component: function component() {
-      (0, _hooks.useEffect)(function () {
-        window.OGWidgets.init();
-      }, []);
       return (0, _preact.h)("div", {
         class: "content"
       }, (0, _preact.h)("h3", null, "Place this Link inside you page content where you want to show widget"), (0, _preact.h)("textarea", {
@@ -2042,7 +2088,7 @@ var App = function App() {
           return console.log('onChange');
         },
         dangerouslySetInnerHTML: {
-          __html: "<a href=\"https://www.outguided.com\" data-og-widget=\"trip\" data-og-trip=\"123\">\n                                powered by outguided.com\n                            </a><script async type=\"text/javascript\" onload=\"window.OGWidgets.init();\" src=\"".concat("http://localhost:1234", "/embed.js\"></script>")
+          __html: "<a href=\"https://www.outguided.com\" data-og-widget=\"trip\" data-og-trip=\"123\">\n                                powered by outguided.com\n                            </a><script async type=\"text/javascript\" src=\"".concat("http://localhost:1234", "/embed.js\"></script>")
         }
       }), (0, _preact.h)("h4", {
         class: "preview__title"
@@ -2060,7 +2106,7 @@ var App = function App() {
 
 var root = document.getElementById('root');
 (0, _preact.render)((0, _preact.h)(App, null), root);
-},{"preact":"../node_modules/preact/dist/preact.module.js","preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","preact-router":"../node_modules/preact-router/dist/preact-router.module.js","history":"../node_modules/history/index.js","./config/Routes":"config/Routes.ts","./pages/TripPage":"pages/TripPage.tsx","./pages/HostPage":"pages/HostPage.tsx","./styles/styles.scss":"styles/styles.scss"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"preact":"../node_modules/preact/dist/preact.module.js","preact-router":"../node_modules/preact-router/dist/preact-router.module.js","history":"../node_modules/history/index.js","./config/Routes":"config/Routes.ts","./pages/TripPage":"pages/TripPage.tsx","./pages/HostPage":"pages/HostPage.tsx","./styles/styles.scss":"styles/styles.scss"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -2088,7 +2134,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60480" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54542" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
