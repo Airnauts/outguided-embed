@@ -48,22 +48,25 @@ declare global {
             iframe.style.overflowX = 'hidden'
             iframe.style.overflowY = 'hidden'
             iframe.style.display = 'block'
-            window?.addEventListener(
-                'message',
-                (event) => {
-                    console.log(event)
-                    if (getEmbedUrl().startsWith(event.origin)) {
-                        const { width, height } = event.data
-                        if (height) {
-                            iframe.style.height = height + 'px'
+            iframe.onload = () => {
+                iframe.contentWindow?.addEventListener(
+                    'message',
+                    (event) => {
+                        console.log(event)
+                        if (getEmbedUrl().startsWith(event.origin)) {
+                            const { width, height } = event.data
+                            if (height) {
+                                iframe.style.height = height + 'px'
+                            }
+                            if (width) {
+                                iframe.style.width = width + 'px'
+                            }
                         }
-                        if (width) {
-                            iframe.style.width = width + 'px'
-                        }
-                    }
-                },
-                false
-            )
+                    },
+                    false
+                )
+            }
+
             element.after(iframe)
             element.style.display = 'none'
         })
