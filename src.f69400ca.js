@@ -1848,27 +1848,50 @@ var Button = function Button(_a) {
 };
 
 exports.Button = Button;
-},{"preact":"../node_modules/preact/dist/preact.module.js"}],"hooks/usePostMessage.ts":[function(require,module,exports) {
+},{"preact":"../node_modules/preact/dist/preact.module.js"}],"utils/messenger.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.usePostMessage = void 0;
+exports.unregister = exports.sendToParent = exports.send = exports.register = void 0;
 
-var _hooks = require("preact/hooks");
+var sendToParent = function sendToParent(data, options) {
+  if (options === void 0) {
+    options = {
+      targetOrigin: '*'
+    };
+  }
 
-var usePostMessage = function usePostMessage() {
-  var send = (0, _hooks.useCallback)(function (data) {
-    window.parent.postMessage(data, '*');
-  }, [window.parent]);
-  return {
-    send: send
-  };
+  window.parent.postMessage(data, options.targetOrigin);
 };
 
-exports.usePostMessage = usePostMessage;
-},{"preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js"}],"hooks/useEmbedSize.ts":[function(require,module,exports) {
+exports.sendToParent = sendToParent;
+
+var send = function send(data, options) {
+  if (options === void 0) {
+    options = {
+      targetOrigin: '*'
+    };
+  }
+
+  window.postMessage(data, options.targetOrigin);
+};
+
+exports.send = send;
+
+var register = function register(listener) {
+  window.addEventListener('message', listener, false);
+};
+
+exports.register = register;
+
+var unregister = function unregister(listener) {
+  window.removeEventListener('message', listener, false);
+};
+
+exports.unregister = unregister;
+},{}],"hooks/useEmbedSize.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1895,7 +1918,7 @@ var useEmbedSize = function useEmbedSize() {
 
       if (width && height) {
         setDimension({
-          width: width + 2,
+          width: width + 6,
           height: height
         });
       }
@@ -1917,13 +1940,12 @@ var _preact = require("preact");
 
 var _hooks = require("preact/hooks");
 
-var _usePostMessage = require("src/hooks/usePostMessage");
+var _messenger = require("src/utils/messenger");
 
 var _useEmbedSize = require("src/hooks/useEmbedSize");
 
 var Widget = function Widget(_a) {
   var children = _a.children;
-  var send = (0, _usePostMessage.usePostMessage)().send;
 
   var _b = (0, _useEmbedSize.useEmbedSize)(),
       width = _b.width,
@@ -1931,18 +1953,18 @@ var Widget = function Widget(_a) {
 
   (0, _hooks.useEffect)(function () {
     if (width && height) {
-      send({
+      (0, _messenger.sendToParent)({
         type: 'size',
         width: width,
         height: height
       });
     }
-  }, [send, width, height]);
+  }, [width, height]);
   return (0, _preact.h)(_preact.Fragment, null, children);
 };
 
 exports.Widget = Widget;
-},{"preact":"../node_modules/preact/dist/preact.module.js","preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","src/hooks/usePostMessage":"hooks/usePostMessage.ts","src/hooks/useEmbedSize":"hooks/useEmbedSize.ts"}],"widgets/TripWidget.tsx":[function(require,module,exports) {
+},{"preact":"../node_modules/preact/dist/preact.module.js","preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","src/utils/messenger":"utils/messenger.ts","src/hooks/useEmbedSize":"hooks/useEmbedSize.ts"}],"widgets/TripWidget.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2224,10 +2246,10 @@ var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
 };
 
 var EMBED_SCRIPT = "<script async type=\"text/javascript\" src=\"".concat("http://localhost:1234", "/embed.js\"></script>");
-var EXAMPLE_SLUG = 'test-trip';
+var EXAMPLE_TRIP = 'https://www.outguided.com/experiences/24-hours-in-browns-canyon-deluxe-overnight-camping-experience-like-nothing-out-there-granite';
 
 var Widgets = function Widgets() {
-  var _a = (0, _hooks.useState)('https://www.outguided.com/experiences/24-hours-in-browns-canyon-deluxe-overnight-camping-experience-like-nothing-out-there-granite'),
+  var _a = (0, _hooks.useState)(EXAMPLE_TRIP),
       tripUrl = _a[0],
       setTripUrl = _a[1];
 
@@ -2402,7 +2424,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54977" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53726" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

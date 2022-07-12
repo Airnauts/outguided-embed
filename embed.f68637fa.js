@@ -162,58 +162,93 @@ var getExternalUrl = function getExternalUrl(path) {
 };
 
 exports.getExternalUrl = getExternalUrl;
+},{}],"utils/messenger.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.unregister = exports.sendToParent = exports.send = exports.register = void 0;
+
+var sendToParent = function sendToParent(data, options) {
+  if (options === void 0) {
+    options = {
+      targetOrigin: '*'
+    };
+  }
+
+  window.parent.postMessage(data, options.targetOrigin);
+};
+
+exports.sendToParent = sendToParent;
+
+var send = function send(data, options) {
+  if (options === void 0) {
+    options = {
+      targetOrigin: '*'
+    };
+  }
+
+  window.postMessage(data, options.targetOrigin);
+};
+
+exports.send = send;
+
+var register = function register(listener) {
+  window.addEventListener('message', listener, false);
+};
+
+exports.register = register;
+
+var unregister = function unregister(listener) {
+  window.removeEventListener('message', listener, false);
+};
+
+exports.unregister = unregister;
 },{}],"embed.ts":[function(require,module,exports) {
 "use strict";
 
 var _Routes = require("./config/Routes");
 
+var _messenger = require("./utils/messenger");
+
 ;
 
 (function (window) {
-  window.OGWidgets = window.OGWidgets || {};
+  var OGWidgets = {
+    processedWidgets: [],
+    listeners: [],
+    listenersRegistered: false,
+    addListener: function addListener(listener) {
+      this.listeners.push(listener);
+    },
+    registerListeners: function registerListeners() {
+      var _this = this;
 
-  window.OGWidgets.init = function () {
-    var elements = document.querySelectorAll('[data-og-widget]:not([data-og-initialized])');
-    elements.forEach(function (element) {
-      element.setAttribute('data-og-initialized', '1');
-      var _a = element.dataset,
-          ogWidget = _a.ogWidget,
-          ogTrip = _a.ogTrip,
-          ogGuide = _a.ogGuide;
+      if (!this.listenersRegistered) {
+        (0, _messenger.register)(function (ev) {
+          _this.listeners.forEach(function (listener) {
+            return listener(ev);
+          });
+        });
+        this.listenersRegistered = true;
+      }
+    },
+    isValidWidgetElement: function isValidWidgetElement(element) {
+      var _a;
 
-      if (!ogWidget) {
-        return;
+      if (!((_a = element.getAttribute('href')) === null || _a === void 0 ? void 0 : _a.startsWith((0, _Routes.getExternalUrl)()))) {
+        return false;
       }
 
-      var url;
-
-      switch (ogWidget) {
-        case 'trip':
-          url = ogTrip && (0, _Routes.getEmbedUrl)((0, _Routes.tripLink)(ogTrip));
-          break;
-
-        case 'guide':
-          url = ogGuide && (0, _Routes.getEmbedUrl)((0, _Routes.hostLink)(ogGuide));
-          break;
+      if (!element.dataset.ogWidget) {
+        return false;
       }
 
-      if (!url) {
-        return;
-      }
-
-      var href = element.getAttribute('href');
-
-      if (!(href === null || href === void 0 ? void 0 : href.startsWith((0, _Routes.getExternalUrl)()))) {
-        return;
-      }
-
-      var iframe = document.createElement('iframe');
-      iframe.src = url;
-      iframe.style.border = 'none';
-      iframe.style.overflowX = 'hidden';
-      iframe.style.overflowY = 'hidden';
-      iframe.style.display = 'block';
-      window === null || window === void 0 ? void 0 : window.addEventListener('message', function (event) {
+      return true;
+    },
+    getWidgetListener: function getWidgetListener(element, iframe) {
+      return function (event) {
         if ((0, _Routes.getEmbedUrl)().startsWith(event.origin)) {
           var type = event.data.type;
 
@@ -231,15 +266,79 @@ var _Routes = require("./config/Routes");
               break;
           }
         }
-      }, false);
+      };
+    },
+    getWidgetCallbackUrl: function getWidgetCallbackUrl(name, _a) {
+      var trip = _a.trip,
+          guide = _a.guide;
+      var url;
+
+      switch (name) {
+        case 'trip':
+          url = trip && (0, _Routes.getEmbedUrl)((0, _Routes.tripLink)(trip));
+          break;
+
+        case 'guide':
+          url = guide && (0, _Routes.getEmbedUrl)((0, _Routes.hostLink)(guide));
+          break;
+      }
+
+      return url;
+    },
+    getWidgetsToInitialize: function getWidgetsToInitialize() {
+      var _this = this;
+
+      return Array.from(document.querySelectorAll('[data-og-widget]')).filter(function (widget) {
+        return !_this.processedWidgets.includes(widget);
+      });
+    },
+    initializeWidget: function initializeWidget(element) {
+      this.processedWidgets.push(element);
+
+      if (!this.isValidWidgetElement(element)) {
+        return;
+      }
+
+      var _a = element.dataset,
+          ogWidget = _a.ogWidget,
+          ogTrip = _a.ogTrip,
+          ogGuide = _a.ogGuide;
+      var url = this.getWidgetCallbackUrl(ogWidget, {
+        trip: ogTrip,
+        guide: ogGuide
+      });
+
+      if (!url) {
+        return;
+      }
+
+      var iframe = document.createElement('iframe');
+      iframe.src = url;
+      iframe.style.border = 'none';
+      iframe.style.width = '0px';
+      iframe.style.height = '0px';
+      iframe.style.overflowX = 'hidden';
+      iframe.style.overflowY = 'hidden';
+      iframe.style.display = 'block';
+      this.addListener(this.getWidgetListener(element, iframe));
       element.after(iframe);
       element.style.display = 'none';
-    });
+    },
+    init: function init() {
+      this.registerListeners();
+      this.getWidgetsToInitialize().forEach(this.initializeWidget.bind(this));
+    }
   };
 
-  window.onload = window.OGWidgets.init;
+  if (!window.OGWidgets) {
+    window.onload = function () {
+      return OGWidgets.init();
+    };
+
+    window.OGWidgets = OGWidgets;
+  }
 })(window);
-},{"./config/Routes":"config/Routes.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./config/Routes":"config/Routes.ts","./utils/messenger":"utils/messenger.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -267,7 +366,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54977" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53726" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
