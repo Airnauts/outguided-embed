@@ -12,7 +12,7 @@ const EXAMPLE_TRIP = 'https://www.outguided.com/experiences/24-hours-in-browns-c
 export const Widgets: FunctionComponent<{}> = () => {
   const [slug, setSlug] = useState<string | undefined>(getTripSlugFromUrl(EXAMPLE_TRIP))
   const { data, error } = useTripBySlug(slug)
-  console.log(error)
+
   useEffect(() => {
     window.OGWidgets.init()
   }, [data])
