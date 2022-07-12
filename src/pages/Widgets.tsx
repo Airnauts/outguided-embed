@@ -1,8 +1,7 @@
 import { Fragment, h } from 'preact'
 import { FunctionComponent } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
-import { getBySlug, useTripBySlug } from 'src/api/trip'
-import { Button } from 'src/components/Button/Button'
+import { useTripBySlug } from 'src/api/trip'
 import { getTripSlugFromUrl } from 'src/config/Routes'
 import { TripWidget } from 'src/widgets/TripWidget'
 
@@ -11,7 +10,7 @@ const EXAMPLE_TRIP = 'https://www.outguided.com/experiences/24-hours-in-browns-c
 
 export const Widgets: FunctionComponent<{}> = () => {
   const [slug, setSlug] = useState<string | undefined>(getTripSlugFromUrl(EXAMPLE_TRIP))
-  const { data, error } = useTripBySlug(slug)
+  const { data, error, isValidating } = useTripBySlug(slug)
 
   useEffect(() => {
     window.OGWidgets.init()
@@ -29,7 +28,7 @@ export const Widgets: FunctionComponent<{}> = () => {
           onInput={({ target }) => setSlug(getTripSlugFromUrl((target as HTMLInputElement)?.value))}
         ></input>
       </form>
-      {error && <h4>{error.message}</h4>}
+      {error && !isValidating && <h4>{error.message}</h4>}
       {data && (
         <Fragment>
           <h3>Place this Link inside you page content where you want to show widget</h3>
