@@ -4969,11 +4969,13 @@ var Widgets = function Widgets() {
       slug = _a[0],
       setSlug = _a[1];
 
-  var _b = (0, _trip.useTripBySlug)(slug),
+  var _b = (0, _trip.useTripBySlug)(slug, {
+    refreshInterval: 0
+  }),
       data = _b.data,
-      error = _b.error;
+      error = _b.error,
+      isValidating = _b.isValidating;
 
-  console.log(error);
   (0, _hooks.useEffect)(function () {
     window.OGWidgets.init();
   }, [data]);
@@ -4989,7 +4991,7 @@ var Widgets = function Widgets() {
       var target = _a.target;
       return setSlug((0, _Routes.getTripSlugFromUrl)(target === null || target === void 0 ? void 0 : target.value));
     }
-  })), error && (0, _preact.h)("h4", null, error.message), data && (0, _preact.h)(_preact.Fragment, null, (0, _preact.h)("h3", null, "Place this Link inside you page content where you want to show widget"), (0, _preact.h)("textarea", {
+  })), error && !isValidating && (0, _preact.h)("h4", null, error.message), data && (0, _preact.h)(_preact.Fragment, null, (0, _preact.h)("h3", null, "Place this Link inside you page content where you want to show widget"), (0, _preact.h)("textarea", {
     cols: 80,
     rows: 7,
     dangerouslySetInnerHTML: {
@@ -5082,7 +5084,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58473" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50979" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
