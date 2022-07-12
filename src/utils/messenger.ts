@@ -1,27 +1,14 @@
-import { MessageListener, MessageSender } from 'src/types'
+import { MessageListenerCallback, MessageSender } from 'src/types'
 
-export const sendToParent: MessageSender = (
-  data,
-  options = {
-    targetOrigin: '*',
-  }
-) => {
-  window.parent.postMessage(data, options.targetOrigin)
+export const send: MessageSender = (data, options) => {
+  const { target, targetOrigin = '*' } = options ?? {}
+  ;(target || window).postMessage(data, targetOrigin)
 }
 
-export const send: MessageSender = (
-  data,
-  options = {
-    targetOrigin: '*',
-  }
-) => {
-  window.postMessage(data, options.targetOrigin)
-}
-
-export const register = (listener: MessageListener) => {
+export const register = (listener: MessageListenerCallback) => {
   window.addEventListener('message', listener, false)
 }
 
-export const unregister = (listener: MessageListener) => {
+export const unregister = (listener: MessageListenerCallback) => {
   window.removeEventListener('message', listener, false)
 }

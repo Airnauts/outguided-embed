@@ -13,8 +13,15 @@ export type Dimension = {
   height: number
 }
 export type MessageSenderOptions = {
-  targetOrigin: string
+  target?: Window
+  targetOrigin?: string
 }
 
-export type MessageListener = (event: MessageEvent<EmbedMessage>) => void
+export type MessageListenerCallback = (event: MessageEvent<EmbedMessage>) => void
 export type MessageSender = (data: EmbedMessage, options?: MessageSenderOptions) => void
+
+
+export type Trip = {
+  title: string
+  slug: string
+}

@@ -1,52 +1,95 @@
-import { getEmbedUrl, getExternalUrl, hostLink, tripLink } from './config/Routes'
-import { EmbedMessage, EmbedSizeMessage, MessageListener } from './types'
+import { getEmbedUrl, getExternalUrl, getHostSlugFromUrl, getTripSlugFromUrl, hostLink, tripLink } from './config/Routes'
+import { EmbedMessage, EmbedSizeMessage, MessageListenerCallback } from './types'
 import { register } from './utils/messenger'
 declare global {
   interface Window {
     OGWidgets: {
-      processedWidgets: HTMLElement[]
-      listeners: MessageListener[]
-      listenersRegistered: boolean
-      registerListeners: () => void
-      getWidgetsToInitialize: () => HTMLElement[]
-      getWidgetCallbackUrl: (type: string, params: { trip?: string; guide?: string }) => string | undefined
-      isValidWidgetElement: (element: HTMLElement) => boolean
-      initializeWidget: (element: HTMLElement) => void
-      addListener: (listener: MessageListener) => void
-      getWidgetListener: (element: HTMLElement, iframe: HTMLIFrameElement) => MessageListener
+      processedWidgets: HTMLAnchorElement[]
+      listenerCallbacks: MessageListenerCallback[]
+      listenerRegistered: boolean
+      registerListener: () => void
+      getWidgetCallbackUrl: (href: string) => string | undefined
+      createIframe: () => HTMLIFrameElement
+      initializeWidget: (element: HTMLAnchorElement) => void
+      addListenerCallback: (listener: MessageListenerCallback) => void
+      getWidgetListenerCallback: (iframe: HTMLIFrameElement) => MessageListenerCallback
       init: () => void
     }
   }
 }
+const IFRAME_STYLES = {
+  border: 'none',
+  width: '0px',
+  height: '0px',
+  'overflow-x': 'hidden',
+  'overflow-y': 'hidden',
+  display: 'block',
+} as { [key: string]: string }
+
+const IFRAME_ATTRIBUTES = {
+  scrolling: 'no',
+  frameborder: '0',
+  allowtransparency: 'true',
+  allowfullscreen: 'true',
+} as { [key: string]: string }
 
 ;(function (window) {
   const OGWidgets = {
     processedWidgets: [],
-    listeners: [],
-    listenersRegistered: false,
-    addListener: function (listener: MessageListener) {
-      this.listeners.push(listener)
+    listenerCallbacks: [],
+    listenerRegistered: false,
+    init: function () {
+      this.registerListener()
+      const widgets = document.querySelectorAll(`a[data-og-widget][href^="${getExternalUrl()}"]`) as NodeListOf<HTMLAnchorElement>
+      widgets.forEach(this.initializeWidget.bind(this))
     },
-    registerListeners: function () {
-      if (!this.listenersRegistered) {
+
+    registerListener: function () {
+      if (!this.listenerRegistered) {
         register((ev) => {
-          this.listeners.forEach((listener) => listener(ev))
+          this.listenerCallbacks.forEach((listener) => listener(ev))
         })
-        this.listenersRegistered = true
+        this.listenerRegistered = true
       }
     },
-    isValidWidgetElement: function (element) {
-      if (!element.getAttribute('href')?.startsWith(getExternalUrl())) {
-        return false
-      }
-
-      if (!element.dataset.ogWidget) {
-        return false
-      }
-
-      return true
+    addListenerCallback: function (listener) {
+      this.listenerCallbacks.push(listener)
     },
-    getWidgetListener: function (element, iframe) {
+    initializeWidget: function (element) {
+      if (this.processedWidgets.includes(element)) {
+        return
+      }
+      this.processedWidgets.push(element)
+
+      const url = this.getWidgetCallbackUrl(element.href)
+      if (!url) {
+        return
+      }
+
+      const iframe = this.createIframe()
+      iframe.src = url
+      iframe.onload = () => {
+        element.remove()
+      }
+      element.after(iframe)
+      this.addListenerCallback(this.getWidgetListenerCallback(iframe))
+    },
+    getWidgetCallbackUrl: function (href) {
+      let url
+      if (getTripSlugFromUrl(href)) {
+        url = getEmbedUrl(tripLink(getTripSlugFromUrl(href)))
+      } else if (getHostSlugFromUrl(href)) {
+        url = getEmbedUrl(hostLink(getHostSlugFromUrl(href)))
+      }
+      return url
+    },
+    createIframe: function () {
+      const iframe = document.createElement('iframe')
+      Object.keys(IFRAME_ATTRIBUTES).forEach((attribute) => iframe.setAttribute(attribute, IFRAME_ATTRIBUTES[attribute]))
+      Object.keys(IFRAME_STYLES).forEach((style) => iframe.style.setProperty(style, IFRAME_STYLES[style]))
+      return iframe
+    },
+    getWidgetListenerCallback: function (iframe) {
       return (event) => {
         if (getEmbedUrl().startsWith(event.origin)) {
           const { type } = event.data as EmbedMessage
@@ -56,64 +99,17 @@ declare global {
               iframe.style.height = height + 'px'
               iframe.style.width = width + 'px'
               break
-            case 'other':
-              console.log('other event')
+            default:
+              console.log(event.data)
               break
           }
         }
       }
     },
-    getWidgetCallbackUrl: function (name, { trip, guide }) {
-      let url
-      switch (name) {
-        case 'trip':
-          url = trip && getEmbedUrl(tripLink(trip))
-          break
-        case 'guide':
-          url = guide && getEmbedUrl(hostLink(guide))
-          break
-      }
-      return url
-    },
-    getWidgetsToInitialize: function () {
-      return Array.from(document.querySelectorAll('[data-og-widget]') as NodeListOf<HTMLElement>).filter(
-        (widget) => !this.processedWidgets.includes(widget)
-      )
-    },
-    initializeWidget: function (element) {
-      this.processedWidgets.push(element)
-
-      if (!this.isValidWidgetElement(element)) {
-        return
-      }
-
-      const { ogWidget, ogTrip, ogGuide } = element.dataset
-      const url = this.getWidgetCallbackUrl(ogWidget!, { trip: ogTrip, guide: ogGuide })
-      if (!url) {
-        return
-      }
-
-      const iframe = document.createElement('iframe')
-      iframe.src = url
-      iframe.style.border = 'none'
-      iframe.style.width = '0px'
-      iframe.style.height = '0px'
-      iframe.style.overflowX = 'hidden'
-      iframe.style.overflowY = 'hidden'
-      iframe.style.display = 'block'
-
-      this.addListener(this.getWidgetListener(element, iframe))
-
-      element.after(iframe)
-      element.style.display = 'none'
-    },
-    init: function () {
-      this.registerListeners()
-      this.getWidgetsToInitialize().forEach(this.initializeWidget.bind(this))
-    },
   } as Window['OGWidgets']
 
   if (!window.OGWidgets) {
+    OGWidgets.init()
     window.onload = () => OGWidgets.init()
     window.OGWidgets = OGWidgets
   }
