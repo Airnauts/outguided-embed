@@ -8,7 +8,7 @@ export const useEmbedSize = () => {
             const height = document?.body.scrollHeight
             const width = document?.getElementById('root')?.children?.[0]?.scrollWidth
             if (width && height) {
-                setDimension({ width: width + 2, height })
+                setDimension({ width: width + 4, height })
             }
         }
     }, [document?.body.scrollHeight, dimension.height])
