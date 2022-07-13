@@ -90,9 +90,8 @@ const IFRAME_ATTRIBUTES = {
     },
     createIframe: function (src) {
       const iframe = document.createElement('iframe')
-      const id = getId()
-      iframe.src = src + '?id=' + id
-      iframe.id = `og-widget-${id}`
+      iframe.src = src
+      iframe.id = `od-widget-${getId()}`
       Object.keys(IFRAME_ATTRIBUTES).forEach((attribute) => iframe.setAttribute(attribute, IFRAME_ATTRIBUTES[attribute]))
       Object.keys(IFRAME_STYLES).forEach((style) => iframe.style.setProperty(style, IFRAME_STYLES[style]))
       return iframe
@@ -104,7 +103,7 @@ const IFRAME_ATTRIBUTES = {
           data: { type, id },
         } = event as EmbedMessage
 
-        if (getEmbedUrl().startsWith(origin) && iframe.id === `og-widget-${id}`) {
+        if (getEmbedUrl().startsWith(origin) && iframe.id === id) {
           switch (type) {
             case 'size':
               const { width, height } = event.data as EmbedSizeMessage
