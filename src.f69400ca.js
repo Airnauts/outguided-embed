@@ -2827,25 +2827,7 @@ var useEmbedSize = function useEmbedSize() {
 };
 
 exports.useEmbedSize = useEmbedSize;
-},{"preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js"}],"hooks/useId.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.useId = void 0;
-
-var _hooks = require("preact/hooks");
-
-var _helper = require("src/utils/helper");
-
-var useId = function useId() {
-  var id = (0, _hooks.useRef)((0, _helper.getId)());
-  return id.current;
-};
-
-exports.useId = useId;
-},{"preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","src/utils/helper":"utils/helper.ts"}],"components/WidgetWrapper/WidgetWrapper.tsx":[function(require,module,exports) {
+},{"preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js"}],"components/WidgetWrapper/WidgetWrapper.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2861,23 +2843,19 @@ var _messenger = require("src/utils/messenger");
 
 var _useEmbedSize = require("src/hooks/useEmbedSize");
 
-var _useId = require("src/hooks/useId");
-
 var WidgetWrapper = function WidgetWrapper(_a) {
-  var children = _a.children;
-  var id = (0, _useId.useId)();
+  var children = _a.children,
+      id = _a.id;
 
   var _b = (0, _useEmbedSize.useEmbedSize)(),
       width = _b.width,
       height = _b.height;
 
   (0, _hooks.useEffect)(function () {
-    var _a;
-
     if (width && height) {
       (0, _messenger.send)({
         type: 'size',
-        id: (_a = window.frameElement) === null || _a === void 0 ? void 0 : _a.id,
+        id: id,
         width: width,
         height: height
       }, {
@@ -2889,7 +2867,7 @@ var WidgetWrapper = function WidgetWrapper(_a) {
 };
 
 exports.WidgetWrapper = WidgetWrapper;
-},{"preact":"../node_modules/preact/dist/preact.module.js","preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","src/utils/messenger":"utils/messenger.ts","src/hooks/useEmbedSize":"hooks/useEmbedSize.ts","src/hooks/useId":"hooks/useId.ts"}],"components/Snippet/Snippet.tsx":[function(require,module,exports) {
+},{"preact":"../node_modules/preact/dist/preact.module.js","preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","src/utils/messenger":"utils/messenger.ts","src/hooks/useEmbedSize":"hooks/useEmbedSize.ts"}],"components/Snippet/Snippet.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2941,15 +2919,23 @@ var Link = function Link(slug, params) {
 };
 
 var Widget = function Widget(_a) {
-  var slug = _a.matches.slug;
-  return (0, _preact.h)(_WidgetWrapper.WidgetWrapper, null, (0, _preact.h)(_Button.Button, {
+  var _b = _a.matches,
+      slug = _b.slug,
+      id = _b.id;
+  return (0, _preact.h)(_WidgetWrapper.WidgetWrapper, {
+    id: id
+  }, (0, _preact.h)(_Button.Button, {
     href: (0, _Routes.getExternalUrl)("".concat((0, _Routes.tripLink)(slug), "?source=").concat(encodeURIComponent(window.parent.location.origin)))
   }, "Book Now"));
 };
 
 var Code = function Code(_a) {
-  var slug = _a.matches.slug;
-  return (0, _preact.h)(_WidgetWrapper.WidgetWrapper, null, (0, _preact.h)(_Snippet.Snippet, {
+  var _b = _a.matches,
+      slug = _b.slug,
+      id = _b.id;
+  return (0, _preact.h)(_WidgetWrapper.WidgetWrapper, {
+    id: id
+  }, (0, _preact.h)(_Snippet.Snippet, {
     code: Link(slug, {
       withEmbedCode: true
     })
@@ -5193,7 +5179,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61880" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55406" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
