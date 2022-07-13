@@ -5,13 +5,12 @@ import { useEmbedSize } from 'src/hooks/useEmbedSize'
 import { EmbedIdMessage, EmbedSizeMessage } from 'src/types'
 import { useId } from 'src/hooks/useId'
 
-export const WidgetWrapper: FunctionComponent = ({ children }) => {
-  const id = useId()
+export const WidgetWrapper: FunctionComponent<{ id: string }> = ({ children, id }) => {
   const { width, height } = useEmbedSize()
+
   useEffect(() => {
     if (width && height) {
-
-      send({ type: 'size', id: window.frameElement?.id, width, height } as EmbedSizeMessage, { target: window.parent})
+      send({ type: 'size', id, width, height } as EmbedSizeMessage, { target: window.parent })
     }
   }, [width, height, id])
 
