@@ -13,8 +13,10 @@ export const Widgets: FunctionComponent<{}> = () => {
   const { data, error, isValidating } = useTripBySlug(slug, { refreshInterval: 0 })
 
   useEffect(() => {
-    window.OGWidgets.init()
-  }, [data])
+    if(data && window.OGWidgets){
+      window.OGWidgets.init()
+    }
+  }, [data, window.OGWidgets])
 
   return (
     <div class="content">
