@@ -117,26 +117,81 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"utils/helper.ts":[function(require,module,exports) {
+})({"config/Widgets.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.escapeRegExp = void 0;
+exports.EXAMPLE_TRIP = exports.EMBED_SCRIPT = void 0;
+var EMBED_SCRIPT = "<script async src=\"".concat("http://localhost:1234", "/embed.js\"></script>");
+exports.EMBED_SCRIPT = EMBED_SCRIPT;
+var EXAMPLE_TRIP = 'https://www.outguided.com/experiences/24-hours-in-browns-canyon-deluxe-overnight-camping-experience-like-nothing-out-there-granite';
+exports.EXAMPLE_TRIP = EXAMPLE_TRIP;
+},{}],"utils/helper.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getSnippetLink = exports.getId = exports.escapeRegExp = void 0;
+
+var _Widgets = require("src/config/Widgets");
+
+var __assign = void 0 && (void 0).__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return __assign.apply(this, arguments);
+};
 
 var escapeRegExp = function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 };
 
 exports.escapeRegExp = escapeRegExp;
-},{}],"config/Routes.ts":[function(require,module,exports) {
+
+var getSnippetLink = function getSnippetLink(url, label, _a) {
+  if (label === void 0) {
+    label = 'Powered by outguided.com';
+  }
+
+  var _b = _a === void 0 ? {} : _a,
+      _c = _b.data,
+      data = _c === void 0 ? {} : _c,
+      withEmbedCode = _b.withEmbedCode;
+
+  var attributeString = Object.keys(__assign(__assign({}, data), {
+    widget: ''
+  })).map(function (key) {
+    return " data-og-".concat(key).concat(data[key] ? "=\"".concat(data[key], "\"") : '');
+  }).join('');
+  return "<a href=\"".concat(url, "\"").concat(attributeString, ">").concat(label, "</a>").concat(withEmbedCode ? _Widgets.EMBED_SCRIPT : '');
+};
+
+exports.getSnippetLink = getSnippetLink;
+
+var getId = function getId() {
+  return String(Date.now().toString(32) + Math.random().toString(16)).replace(/\./g, '');
+};
+
+exports.getId = getId;
+},{"src/config/Widgets":"config/Widgets.ts"}],"config/Routes.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.tripLink = exports.hostLink = exports.getTripSlugFromUrl = exports.getHostSlugFromUrl = exports.getExternalUrl = exports.getEmbedUrl = exports.getEmbedPath = exports.TRIP_PAGE = exports.HOST_PAGE = void 0;
+exports.tripLink = exports.hostLink = exports.getTripSlugFromUrl = exports.getHostSlugFromUrl = exports.getExternalUrl = exports.getEmbedUrl = exports.getEmbedSnippetUrl = exports.getEmbedSnippetPath = exports.getEmbedPath = exports.TRIP_PAGE = exports.HOST_PAGE = void 0;
 
 var _helper = require("src/utils/helper");
 
@@ -179,11 +234,23 @@ var getEmbedPath = function getEmbedPath(path) {
 
 exports.getEmbedPath = getEmbedPath;
 
+var getEmbedSnippetPath = function getEmbedSnippetPath(path) {
+  return "/code".concat(path);
+};
+
+exports.getEmbedSnippetPath = getEmbedSnippetPath;
+
 var getEmbedUrl = function getEmbedUrl(path) {
   return "".concat("http://localhost:1234").concat(path ? "/#".concat(getEmbedPath(path)) : '');
 };
 
 exports.getEmbedUrl = getEmbedUrl;
+
+var getEmbedSnippetUrl = function getEmbedSnippetUrl(path) {
+  return "".concat("http://localhost:1234").concat(path ? "/#".concat(getEmbedSnippetPath(path)) : '');
+};
+
+exports.getEmbedSnippetUrl = getEmbedSnippetUrl;
 
 var getExternalUrl = function getExternalUrl(path) {
   if (path === void 0) {
@@ -228,6 +295,8 @@ exports.unregister = unregister;
 "use strict";
 
 var _Routes = require("./config/Routes");
+
+var _helper = require("./utils/helper");
 
 var _messenger = require("./utils/messenger");
 
@@ -277,14 +346,13 @@ var IFRAME_ATTRIBUTES = {
       }
 
       this.processedWidgets.push(element);
-      var url = this.getWidgetCallbackUrl(element.href);
+      var url = this.getWidgetCallbackUrl(element);
 
       if (!url) {
         return;
       }
 
-      var iframe = this.createIframe();
-      iframe.src = url;
+      var iframe = this.createIframe(url);
 
       iframe.onload = function () {
         element.remove();
@@ -293,19 +361,23 @@ var IFRAME_ATTRIBUTES = {
       element.after(iframe);
       this.addListenerCallback(this.getWidgetListenerCallback(iframe));
     },
-    getWidgetCallbackUrl: function getWidgetCallbackUrl(href) {
+    getWidgetCallbackUrl: function getWidgetCallbackUrl(element) {
       var url;
+      var href = element.href,
+          ogCode = element.dataset.ogCode;
 
       if ((0, _Routes.getTripSlugFromUrl)(href)) {
-        url = (0, _Routes.getEmbedUrl)((0, _Routes.tripLink)((0, _Routes.getTripSlugFromUrl)(href)));
+        url = (0, _Routes.tripLink)((0, _Routes.getTripSlugFromUrl)(href));
       } else if ((0, _Routes.getHostSlugFromUrl)(href)) {
-        url = (0, _Routes.getEmbedUrl)((0, _Routes.hostLink)((0, _Routes.getHostSlugFromUrl)(href)));
+        url = (0, _Routes.hostLink)((0, _Routes.getHostSlugFromUrl)(href));
       }
 
-      return url;
+      return url ? typeof ogCode !== 'undefined' ? (0, _Routes.getEmbedSnippetUrl)(url) : (0, _Routes.getEmbedUrl)(url) : null;
     },
-    createIframe: function createIframe() {
+    createIframe: function createIframe(src) {
       var iframe = document.createElement('iframe');
+      iframe.src = src;
+      iframe.id = "od-widget-".concat((0, _helper.getId)());
       Object.keys(IFRAME_ATTRIBUTES).forEach(function (attribute) {
         return iframe.setAttribute(attribute, IFRAME_ATTRIBUTES[attribute]);
       });
@@ -316,14 +388,18 @@ var IFRAME_ATTRIBUTES = {
     },
     getWidgetListenerCallback: function getWidgetListenerCallback(iframe) {
       return function (event) {
-        if ((0, _Routes.getEmbedUrl)().startsWith(event.origin)) {
-          var type = event.data.type;
+        var _a = event,
+            origin = _a.origin,
+            _b = _a.data,
+            type = _b.type,
+            id = _b.id;
 
+        if ((0, _Routes.getEmbedUrl)().startsWith(origin) && iframe.id === id) {
           switch (type) {
             case 'size':
-              var _a = event.data,
-                  width = _a.width,
-                  height = _a.height;
+              var _c = event.data,
+                  width = _c.width,
+                  height = _c.height;
               iframe.style.height = height + 'px';
               iframe.style.width = width + 'px';
               break;
@@ -347,7 +423,7 @@ var IFRAME_ATTRIBUTES = {
     window.OGWidgets = OGWidgets;
   }
 })(window);
-},{"./config/Routes":"config/Routes.ts","./utils/messenger":"utils/messenger.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./config/Routes":"config/Routes.ts","./utils/helper":"utils/helper.ts","./utils/messenger":"utils/messenger.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -375,7 +451,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50979" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61880" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -2592,26 +2592,81 @@ var fetcher = function fetcher(input, options) {
 };
 
 exports.fetcher = fetcher;
-},{"isomorphic-fetch":"../node_modules/isomorphic-fetch/fetch-npm-browserify.js"}],"utils/helper.ts":[function(require,module,exports) {
+},{"isomorphic-fetch":"../node_modules/isomorphic-fetch/fetch-npm-browserify.js"}],"config/Widgets.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.escapeRegExp = void 0;
+exports.EXAMPLE_TRIP = exports.EMBED_SCRIPT = void 0;
+var EMBED_SCRIPT = "<script async src=\"".concat("http://localhost:1234", "/embed.js\"></script>");
+exports.EMBED_SCRIPT = EMBED_SCRIPT;
+var EXAMPLE_TRIP = 'https://www.outguided.com/experiences/24-hours-in-browns-canyon-deluxe-overnight-camping-experience-like-nothing-out-there-granite';
+exports.EXAMPLE_TRIP = EXAMPLE_TRIP;
+},{}],"utils/helper.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getSnippetLink = exports.getId = exports.escapeRegExp = void 0;
+
+var _Widgets = require("src/config/Widgets");
+
+var __assign = void 0 && (void 0).__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return __assign.apply(this, arguments);
+};
 
 var escapeRegExp = function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 };
 
 exports.escapeRegExp = escapeRegExp;
-},{}],"config/Routes.ts":[function(require,module,exports) {
+
+var getSnippetLink = function getSnippetLink(url, label, _a) {
+  if (label === void 0) {
+    label = 'Powered by outguided.com';
+  }
+
+  var _b = _a === void 0 ? {} : _a,
+      _c = _b.data,
+      data = _c === void 0 ? {} : _c,
+      withEmbedCode = _b.withEmbedCode;
+
+  var attributeString = Object.keys(__assign(__assign({}, data), {
+    widget: ''
+  })).map(function (key) {
+    return " data-og-".concat(key).concat(data[key] ? "=\"".concat(data[key], "\"") : '');
+  }).join('');
+  return "<a href=\"".concat(url, "\"").concat(attributeString, ">").concat(label, "</a>").concat(withEmbedCode ? _Widgets.EMBED_SCRIPT : '');
+};
+
+exports.getSnippetLink = getSnippetLink;
+
+var getId = function getId() {
+  return String(Date.now().toString(32) + Math.random().toString(16)).replace(/\./g, '');
+};
+
+exports.getId = getId;
+},{"src/config/Widgets":"config/Widgets.ts"}],"config/Routes.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.tripLink = exports.hostLink = exports.getTripSlugFromUrl = exports.getHostSlugFromUrl = exports.getExternalUrl = exports.getEmbedUrl = exports.getEmbedPath = exports.TRIP_PAGE = exports.HOST_PAGE = void 0;
+exports.tripLink = exports.hostLink = exports.getTripSlugFromUrl = exports.getHostSlugFromUrl = exports.getExternalUrl = exports.getEmbedUrl = exports.getEmbedSnippetUrl = exports.getEmbedSnippetPath = exports.getEmbedPath = exports.TRIP_PAGE = exports.HOST_PAGE = void 0;
 
 var _helper = require("src/utils/helper");
 
@@ -2654,11 +2709,23 @@ var getEmbedPath = function getEmbedPath(path) {
 
 exports.getEmbedPath = getEmbedPath;
 
+var getEmbedSnippetPath = function getEmbedSnippetPath(path) {
+  return "/code".concat(path);
+};
+
+exports.getEmbedSnippetPath = getEmbedSnippetPath;
+
 var getEmbedUrl = function getEmbedUrl(path) {
   return "".concat("http://localhost:1234").concat(path ? "/#".concat(getEmbedPath(path)) : '');
 };
 
 exports.getEmbedUrl = getEmbedUrl;
+
+var getEmbedSnippetUrl = function getEmbedSnippetUrl(path) {
+  return "".concat("http://localhost:1234").concat(path ? "/#".concat(getEmbedSnippetPath(path)) : '');
+};
+
+exports.getEmbedSnippetUrl = getEmbedSnippetUrl;
 
 var getExternalUrl = function getExternalUrl(path) {
   if (path === void 0) {
@@ -2760,13 +2827,31 @@ var useEmbedSize = function useEmbedSize() {
 };
 
 exports.useEmbedSize = useEmbedSize;
-},{"preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js"}],"components/Widget/Widget.tsx":[function(require,module,exports) {
+},{"preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js"}],"hooks/useId.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Widget = void 0;
+exports.useId = void 0;
+
+var _hooks = require("preact/hooks");
+
+var _helper = require("src/utils/helper");
+
+var useId = function useId() {
+  var id = (0, _hooks.useRef)((0, _helper.getId)());
+  return id.current;
+};
+
+exports.useId = useId;
+},{"preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","src/utils/helper":"utils/helper.ts"}],"components/WidgetWrapper/WidgetWrapper.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.WidgetWrapper = void 0;
 
 var _preact = require("preact");
 
@@ -2776,46 +2861,57 @@ var _messenger = require("src/utils/messenger");
 
 var _useEmbedSize = require("src/hooks/useEmbedSize");
 
-var Widget = function Widget(_a) {
+var _useId = require("src/hooks/useId");
+
+var WidgetWrapper = function WidgetWrapper(_a) {
   var children = _a.children;
+  var id = (0, _useId.useId)();
 
   var _b = (0, _useEmbedSize.useEmbedSize)(),
       width = _b.width,
       height = _b.height;
 
   (0, _hooks.useEffect)(function () {
+    var _a;
+
     if (width && height) {
       (0, _messenger.send)({
         type: 'size',
+        id: (_a = window.frameElement) === null || _a === void 0 ? void 0 : _a.id,
         width: width,
         height: height
       }, {
         target: window.parent
       });
     }
-  }, [width, height]);
+  }, [width, height, id]);
   return (0, _preact.h)(_preact.Fragment, null, children);
 };
 
-exports.Widget = Widget;
-},{"preact":"../node_modules/preact/dist/preact.module.js","preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","src/utils/messenger":"utils/messenger.ts","src/hooks/useEmbedSize":"hooks/useEmbedSize.ts"}],"config/Widgets.ts":[function(require,module,exports) {
+exports.WidgetWrapper = WidgetWrapper;
+},{"preact":"../node_modules/preact/dist/preact.module.js","preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","src/utils/messenger":"utils/messenger.ts","src/hooks/useEmbedSize":"hooks/useEmbedSize.ts","src/hooks/useId":"hooks/useId.ts"}],"components/Snippet/Snippet.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getWidgetSnippet = void 0;
+exports.Snippet = void 0;
 
-var getWidgetSnippet = function getWidgetSnippet(url, label) {
-  if (label === void 0) {
-    label = 'Powered by outguided.com';
-  }
+var _preact = require("preact");
 
-  return "<a href=\"".concat(url, "\" data-og-widget>").concat(label, "</a>");
+var Snippet = function Snippet(_a) {
+  var code = _a.code;
+  return (0, _preact.h)("textarea", {
+    cols: 80,
+    rows: 7,
+    dangerouslySetInnerHTML: {
+      __html: code
+    }
+  });
 };
 
-exports.getWidgetSnippet = getWidgetSnippet;
-},{}],"widgets/TripWidget.tsx":[function(require,module,exports) {
+exports.Snippet = Snippet;
+},{"preact":"../node_modules/preact/dist/preact.module.js"}],"pages/TripWidget.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2829,43 +2925,43 @@ var _Button = require("src/components/Button/Button");
 
 var _Routes = require("src/config/Routes");
 
-var _Widget = require("src/components/Widget/Widget");
+var _WidgetWrapper = require("src/components/WidgetWrapper/WidgetWrapper");
 
-var _Widgets = require("src/config/Widgets");
+var _helper = require("src/utils/helper");
 
-var Snippet = function Snippet(_a) {
-  var slug = _a.slug;
-  return (0, _Widgets.getWidgetSnippet)((0, _Routes.getExternalUrl)((0, _Routes.tripLink)(slug)), 'Book Now');
+var _Snippet = require("src/components/Snippet/Snippet");
+
+var Link = function Link(slug, params) {
+  if (params === void 0) {
+    params = {};
+  }
+
+  var link = (0, _Routes.getExternalUrl)((0, _Routes.tripLink)(slug));
+  return (0, _helper.getSnippetLink)(link, 'Book Now', params);
 };
 
-var TripPage = function TripPage(_a) {
+var Widget = function Widget(_a) {
   var slug = _a.matches.slug;
-  return (0, _preact.h)(_Widget.Widget, null, (0, _preact.h)(_Button.Button, {
+  return (0, _preact.h)(_WidgetWrapper.WidgetWrapper, null, (0, _preact.h)(_Button.Button, {
     href: (0, _Routes.getExternalUrl)("".concat((0, _Routes.tripLink)(slug), "?source=").concat(encodeURIComponent(window.parent.location.origin)))
   }, "Book Now"));
 };
 
-var TripWidget = Object.assign(TripPage, {
-  Snippet: Snippet
-});
-exports.TripWidget = TripWidget;
-},{"preact":"../node_modules/preact/dist/preact.module.js","src/components/Button/Button":"components/Button/Button.tsx","src/config/Routes":"config/Routes.ts","src/components/Widget/Widget":"components/Widget/Widget.tsx","src/config/Widgets":"config/Widgets.ts"}],"widgets/HostPage.tsx":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.HostPage = void 0;
-
-var _preact = require("preact");
-
-var HostPage = function HostPage(_a) {
+var Code = function Code(_a) {
   var slug = _a.matches.slug;
-  return (0, _preact.h)(_preact.Fragment, null);
+  return (0, _preact.h)(_WidgetWrapper.WidgetWrapper, null, (0, _preact.h)(_Snippet.Snippet, {
+    code: Link(slug, {
+      withEmbedCode: true
+    })
+  }));
 };
 
-exports.HostPage = HostPage;
-},{"preact":"../node_modules/preact/dist/preact.module.js"}],"../node_modules/dequal/lite/index.js":[function(require,module,exports) {
+var TripWidget = Object.assign(Widget, {
+  Code: Code,
+  Link: Link
+});
+exports.TripWidget = TripWidget;
+},{"preact":"../node_modules/preact/dist/preact.module.js","src/components/Button/Button":"components/Button/Button.tsx","src/config/Routes":"config/Routes.ts","src/components/WidgetWrapper/WidgetWrapper":"components/WidgetWrapper/WidgetWrapper.tsx","src/utils/helper":"utils/helper.ts","src/components/Snippet/Snippet":"components/Snippet/Snippet.tsx"}],"../node_modules/dequal/lite/index.js":[function(require,module,exports) {
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 var has = Object.prototype.hasOwnProperty;
@@ -4957,15 +5053,16 @@ var _hooks = require("preact/hooks");
 
 var _trip = require("src/api/trip");
 
+var _Snippet = require("src/components/Snippet/Snippet");
+
 var _Routes = require("src/config/Routes");
 
-var _TripWidget = require("src/widgets/TripWidget");
+var _Widgets = require("src/config/Widgets");
 
-var EMBED_SCRIPT = "<script async src=\"".concat("http://localhost:1234", "/embed.js\"></script>");
-var EXAMPLE_TRIP = 'https://www.outguided.com/experiences/24-hours-in-browns-canyon-deluxe-overnight-camping-experience-like-nothing-out-there-granite';
+var _TripWidget = require("src/pages/TripWidget");
 
 var Widgets = function Widgets() {
-  var _a = (0, _hooks.useState)((0, _Routes.getTripSlugFromUrl)(EXAMPLE_TRIP)),
+  var _a = (0, _hooks.useState)((0, _Routes.getTripSlugFromUrl)(_Widgets.EXAMPLE_TRIP)),
       slug = _a[0],
       setSlug = _a[1];
 
@@ -4977,8 +5074,10 @@ var Widgets = function Widgets() {
       isValidating = _b.isValidating;
 
   (0, _hooks.useEffect)(function () {
-    window.OGWidgets.init();
-  }, [data]);
+    if (data && window.OGWidgets) {
+      window.OGWidgets.init();
+    }
+  }, [data, window.OGWidgets]);
   return (0, _preact.h)("div", {
     class: "content"
   }, (0, _preact.h)("h3", null, "Enter experience URL:"), (0, _preact.h)("form", null, (0, _preact.h)("label", {
@@ -4986,33 +5085,45 @@ var Widgets = function Widgets() {
   }, "Trip URL:"), (0, _preact.h)("input", {
     id: "tripUrl",
     placeholder: "Enter Trip Url from outguided.com",
-    defaultValue: EXAMPLE_TRIP,
+    defaultValue: _Widgets.EXAMPLE_TRIP,
     onInput: function onInput(_a) {
       var target = _a.target;
       return setSlug((0, _Routes.getTripSlugFromUrl)(target === null || target === void 0 ? void 0 : target.value));
     }
-  })), error && !isValidating && (0, _preact.h)("h4", null, error.message), data && (0, _preact.h)(_preact.Fragment, null, (0, _preact.h)("h3", null, "Place this Link inside you page content where you want to show widget"), (0, _preact.h)("textarea", {
-    cols: 80,
-    rows: 7,
-    dangerouslySetInnerHTML: {
-      __html: "".concat(_TripWidget.TripWidget.Snippet({
-        slug: data.slug
-      })).concat(EMBED_SCRIPT)
-    }
+  })), error && !isValidating && (0, _preact.h)("h4", null, error.message), data && (0, _preact.h)(_preact.Fragment, null, (0, _preact.h)("h3", null, "Place this Link inside you page content where you want to show widget"), (0, _preact.h)(_Snippet.Snippet, {
+    code: _TripWidget.TripWidget.Link(data.slug, {
+      withEmbedCode: true
+    })
   }), (0, _preact.h)("h4", {
     class: "preview__title"
   }, "Widget preview:"), (0, _preact.h)("div", {
     class: "preview",
     dangerouslySetInnerHTML: {
-      __html: _TripWidget.TripWidget.Snippet({
-        slug: data.slug
+      __html: _TripWidget.TripWidget.Link(data.slug)
+    }
+  }), (0, _preact.h)("h3", null, "Place this Link inside you page content where you want to show code"), (0, _preact.h)(_Snippet.Snippet, {
+    code: _TripWidget.TripWidget.Link(data.slug, {
+      withEmbedCode: true,
+      data: {
+        code: ''
+      }
+    })
+  }), (0, _preact.h)("h4", {
+    class: "preview__title"
+  }, "Widget preview:"), (0, _preact.h)("div", {
+    class: "preview",
+    dangerouslySetInnerHTML: {
+      __html: _TripWidget.TripWidget.Link(data.slug, {
+        data: {
+          code: ''
+        }
       })
     }
   })));
 };
 
 exports.Widgets = Widgets;
-},{"preact":"../node_modules/preact/dist/preact.module.js","preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","src/api/trip":"api/trip.ts","src/config/Routes":"config/Routes.ts","src/widgets/TripWidget":"widgets/TripWidget.tsx"}],"index.tsx":[function(require,module,exports) {
+},{"preact":"../node_modules/preact/dist/preact.module.js","preact/hooks":"../node_modules/preact/hooks/dist/hooks.module.js","src/api/trip":"api/trip.ts","src/components/Snippet/Snippet":"components/Snippet/Snippet.tsx","src/config/Routes":"config/Routes.ts","src/config/Widgets":"config/Widgets.ts","src/pages/TripWidget":"pages/TripWidget.tsx"}],"index.tsx":[function(require,module,exports) {
 "use strict";
 
 var _preact = require("preact");
@@ -5025,9 +5136,7 @@ var _fetcher = require("./api/fetcher");
 
 var _Routes = require("./config/Routes");
 
-var _TripWidget = require("./widgets/TripWidget");
-
-var _HostPage = require("./widgets/HostPage");
+var _TripWidget = require("./pages/TripWidget");
 
 var _preactSwr = require("preact-swr");
 
@@ -5046,8 +5155,8 @@ var App = function App() {
     component: _TripWidget.TripWidget,
     path: (0, _Routes.getEmbedPath)(_Routes.TRIP_PAGE)
   }), (0, _preact.h)(_preactRouter.Route, {
-    component: _HostPage.HostPage,
-    path: (0, _Routes.getEmbedPath)(_Routes.HOST_PAGE)
+    component: _TripWidget.TripWidget.Code,
+    path: (0, _Routes.getEmbedSnippetPath)(_Routes.TRIP_PAGE)
   }), (0, _preact.h)(_preactRouter.Route, {
     component: _Widgets.Widgets,
     default: true
@@ -5056,7 +5165,7 @@ var App = function App() {
 
 var root = document.getElementById('root');
 (0, _preact.render)((0, _preact.h)(App, null), root);
-},{"preact":"../node_modules/preact/dist/preact.module.js","preact-router":"../node_modules/preact-router/dist/preact-router.module.js","history":"../node_modules/history/index.js","./api/fetcher":"api/fetcher.ts","./config/Routes":"config/Routes.ts","./widgets/TripWidget":"widgets/TripWidget.tsx","./widgets/HostPage":"widgets/HostPage.tsx","preact-swr":"../node_modules/preact-swr/esm/index.js","./styles/styles.scss":"styles/styles.scss","./pages/Widgets":"pages/Widgets.tsx"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"preact":"../node_modules/preact/dist/preact.module.js","preact-router":"../node_modules/preact-router/dist/preact-router.module.js","history":"../node_modules/history/index.js","./api/fetcher":"api/fetcher.ts","./config/Routes":"config/Routes.ts","./pages/TripWidget":"pages/TripWidget.tsx","preact-swr":"../node_modules/preact-swr/esm/index.js","./styles/styles.scss":"styles/styles.scss","./pages/Widgets":"pages/Widgets.tsx"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -5084,7 +5193,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50979" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61880" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
