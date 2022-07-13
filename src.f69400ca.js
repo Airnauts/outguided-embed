@@ -2844,25 +2844,27 @@ var _messenger = require("src/utils/messenger");
 var _useEmbedSize = require("src/hooks/useEmbedSize");
 
 var WidgetWrapper = function WidgetWrapper(_a) {
-  var children = _a.children,
-      id = _a.id;
+  var children = _a.children;
 
   var _b = (0, _useEmbedSize.useEmbedSize)(),
       width = _b.width,
       height = _b.height;
 
   (0, _hooks.useEffect)(function () {
+    var _a;
+
     if (width && height) {
+      console.log(window);
       (0, _messenger.send)({
         type: 'size',
-        id: id,
+        id: (_a = window.frameElement) === null || _a === void 0 ? void 0 : _a.id,
         width: width,
         height: height
       }, {
         target: window.parent
       });
     }
-  }, [width, height, id]);
+  }, [width, height]);
   return (0, _preact.h)(_preact.Fragment, null, children);
 };
 
@@ -5179,7 +5181,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63674" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50345" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
