@@ -1,5 +1,6 @@
-import { getEmbedUrl, getExternalUrl, getHostSlugFromUrl, getTripSlugFromUrl, hostLink, tripLink } from './config/Routes'
+import { getEmbedSnippetUrl, getEmbedUrl, getExternalUrl, getHostSlugFromUrl, getTripSlugFromUrl, hostLink, tripLink } from './config/Routes'
 import { EmbedMessage, EmbedSizeMessage, MessageListenerCallback } from './types'
+import { getId } from './utils/helper'
 import { register } from './utils/messenger'
 declare global {
   interface Window {
@@ -8,8 +9,8 @@ declare global {
       listenerCallbacks: MessageListenerCallback[]
       listenerRegistered: boolean
       registerListener: () => void
-      getWidgetCallbackUrl: (href: string) => string | undefined
-      createIframe: () => HTMLIFrameElement
+      getWidgetCallbackUrl: (element: HTMLAnchorElement) => string | undefined
+      createIframe: (src: string) => HTMLIFrameElement
       initializeWidget: (element: HTMLAnchorElement) => void
       addListenerCallback: (listener: MessageListenerCallback) => void
       getWidgetListenerCallback: (iframe: HTMLIFrameElement) => MessageListenerCallback
@@ -61,38 +62,48 @@ const IFRAME_ATTRIBUTES = {
       }
       this.processedWidgets.push(element)
 
-      const url = this.getWidgetCallbackUrl(element.href)
+      const url = this.getWidgetCallbackUrl(element)
       if (!url) {
         return
       }
 
-      const iframe = this.createIframe()
-      iframe.src = url
+      const iframe = this.createIframe(url)
+
       iframe.onload = () => {
         element.remove()
       }
       element.after(iframe)
       this.addListenerCallback(this.getWidgetListenerCallback(iframe))
     },
-    getWidgetCallbackUrl: function (href) {
+    getWidgetCallbackUrl: function (element) {
       let url
+      const {
+        href,
+        dataset: { ogCode },
+      } = element
       if (getTripSlugFromUrl(href)) {
-        url = getEmbedUrl(tripLink(getTripSlugFromUrl(href)))
+        url = tripLink(getTripSlugFromUrl(href))
       } else if (getHostSlugFromUrl(href)) {
-        url = getEmbedUrl(hostLink(getHostSlugFromUrl(href)))
+        url = hostLink(getHostSlugFromUrl(href))
       }
-      return url
+      return url ? (typeof ogCode !== 'undefined' ? getEmbedSnippetUrl(url) : getEmbedUrl(url)) : null
     },
-    createIframe: function () {
+    createIframe: function (src) {
       const iframe = document.createElement('iframe')
+      iframe.src = src
+      iframe.id = `od-widget-${getId()}`
       Object.keys(IFRAME_ATTRIBUTES).forEach((attribute) => iframe.setAttribute(attribute, IFRAME_ATTRIBUTES[attribute]))
       Object.keys(IFRAME_STYLES).forEach((style) => iframe.style.setProperty(style, IFRAME_STYLES[style]))
       return iframe
     },
     getWidgetListenerCallback: function (iframe) {
       return (event) => {
-        if (getEmbedUrl().startsWith(event.origin)) {
-          const { type } = event.data as EmbedMessage
+        const {
+          origin,
+          data: { type, id },
+        } = event as EmbedMessage
+
+        if (getEmbedUrl().startsWith(origin) && iframe.id === id) {
           switch (type) {
             case 'size':
               const { width, height } = event.data as EmbedSizeMessage

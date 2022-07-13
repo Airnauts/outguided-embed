@@ -2,18 +2,17 @@ import { Fragment, h } from 'preact'
 import { FunctionComponent } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
 import { useTripBySlug } from 'src/api/trip'
+import { Snippet } from 'src/components/Snippet/Snippet'
 import { getTripSlugFromUrl } from 'src/config/Routes'
-import { TripWidget } from 'src/widgets/TripWidget'
-
-const EMBED_SCRIPT = `<script async src="${process.env.EMBED_URL}/embed.js"></script>`
-const EXAMPLE_TRIP = 'https://www.outguided.com/experiences/24-hours-in-browns-canyon-deluxe-overnight-camping-experience-like-nothing-out-there-granite'
+import { EXAMPLE_TRIP } from 'src/config/Widgets'
+import { TripWidget } from 'src/pages/TripWidget'
 
 export const Widgets: FunctionComponent<{}> = () => {
   const [slug, setSlug] = useState<string | undefined>(getTripSlugFromUrl(EXAMPLE_TRIP))
   const { data, error, isValidating } = useTripBySlug(slug, { refreshInterval: 0 })
 
   useEffect(() => {
-    if(data && window.OGWidgets){
+    if (data && window.OGWidgets) {
       window.OGWidgets.init()
     }
   }, [data, window.OGWidgets])
@@ -34,15 +33,14 @@ export const Widgets: FunctionComponent<{}> = () => {
       {data && (
         <Fragment>
           <h3>Place this Link inside you page content where you want to show widget</h3>
-          <textarea
-            cols={80}
-            rows={7}
-            dangerouslySetInnerHTML={{
-              __html: `${TripWidget.Snippet({ slug: data.slug })}${EMBED_SCRIPT}`,
-            }}
-          ></textarea>
+          <Snippet code={TripWidget.Link(data.slug, { withEmbedCode: true })} />
           <h4 class="preview__title">Widget preview:</h4>
-          <div class="preview" dangerouslySetInnerHTML={{ __html: TripWidget.Snippet({ slug: data.slug }) }} />
+          <div class="preview" dangerouslySetInnerHTML={{ __html: TripWidget.Link(data.slug) }} />
+
+          <h3>Place this Link inside you page content where you want to show code</h3>
+          <Snippet code={TripWidget.Link(data.slug, { withEmbedCode: true, data: { code: '' } })} />
+          <h4 class="preview__title">Widget preview:</h4>
+          <div class="preview" dangerouslySetInnerHTML={{ __html: TripWidget.Link(data.slug, { data: { code: '' } }) }} />
         </Fragment>
       )}
     </div>

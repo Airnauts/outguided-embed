@@ -7,5 +7,7 @@ export const getHostSlugFromUrl = (url: string) => url.match(new RegExp(`^${esca
 export const tripLink = (slug?: string) => TRIP_PAGE.replace(':slug', slug ?? '')
 export const hostLink = (slug?: string) => HOST_PAGE.replace(':slug', slug ?? '')
 export const getEmbedPath = (path: string) => `/embed${path}`
+export const getEmbedSnippetPath = (path: string) => `/code${path}`
 export const getEmbedUrl = (path?: string) => `${process.env.EMBED_URL}${path ? `/#${getEmbedPath(path)}` : ''}`
+export const getEmbedSnippetUrl = (path?: string) => `${process.env.EMBED_URL}${path ? `/#${getEmbedSnippetPath(path)}` : ''}`
 export const getExternalUrl = (path: string = '') => `${process.env.SITE_URL}${path}`
