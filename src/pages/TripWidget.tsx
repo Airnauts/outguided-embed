@@ -12,7 +12,6 @@ const Link = (slug: string, params: SnippetParams = {}) => {
 }
 
 const Widget: FunctionComponent<{ matches: { slug: string; source: string } }> = ({ matches: { slug, source } }) => {
-  console.log(window.frameElement)
   return (
     <WidgetWrapper>
       <Button href={getExternalUrl(`${tripLink(slug)}?source=${encodeURIComponent(source)}`)}>Book Now</Button>
