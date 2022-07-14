@@ -111,7 +111,7 @@ const IFRAME_ATTRIBUTES = {
           origin,
           data: { type, name },
         } = event as MessageEvent<EmbedMessage>
-        console.log(event)
+        console.log(event);
         if (getEmbedUrl().startsWith(origin) && iframe.name === name) {
           switch (type) {
             case 'size':
