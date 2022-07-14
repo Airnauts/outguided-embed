@@ -100,10 +100,10 @@ const IFRAME_ATTRIBUTES = {
       return (event) => {
         const {
           origin,
-          data: { type, id },
+          data: { type, name },
         } = event as EmbedMessage
 
-        if (getEmbedUrl().startsWith(origin) && iframe.name === id) {
+        if (getEmbedUrl().startsWith(origin) && iframe.name === name) {
           switch (type) {
             case 'size':
               const { width, height } = event.data as EmbedSizeMessage
