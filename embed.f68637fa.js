@@ -377,7 +377,7 @@ var IFRAME_ATTRIBUTES = {
     createIframe: function createIframe(src) {
       var iframe = document.createElement('iframe');
       iframe.src = src;
-      iframe.id = "od-widget-".concat((0, _helper.getId)());
+      iframe.name = "od-widget-".concat((0, _helper.getId)());
       Object.keys(IFRAME_ATTRIBUTES).forEach(function (attribute) {
         return iframe.setAttribute(attribute, IFRAME_ATTRIBUTES[attribute]);
       });
@@ -392,9 +392,9 @@ var IFRAME_ATTRIBUTES = {
             origin = _a.origin,
             _b = _a.data,
             type = _b.type,
-            id = _b.id;
+            name = _b.name;
 
-        if ((0, _Routes.getEmbedUrl)().startsWith(origin) && iframe.id === id) {
+        if ((0, _Routes.getEmbedUrl)().startsWith(origin) && iframe.name === name) {
           switch (type) {
             case 'size':
               var _c = event.data,
@@ -451,7 +451,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50345" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64486" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
