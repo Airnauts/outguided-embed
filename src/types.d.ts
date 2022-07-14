@@ -2,6 +2,7 @@ import { FunctionComponent, ComponentChild, JSX } from 'preact'
 
 export interface EmbedMessage {
   type: 'size' | 'id'
+  name: string
   [key: string]: any
 }
 
