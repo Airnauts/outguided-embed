@@ -1,4 +1,4 @@
-import { FunctionComponent, ComponentChild, JSX } from 'preact'
+import { FunctionComponent } from 'preact'
 
 export interface EmbedMessage {
   type: 'size' | 'copy'
