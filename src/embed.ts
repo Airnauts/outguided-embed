@@ -72,9 +72,9 @@ const IFRAME_ATTRIBUTES = {
       iframe.onload = () => {
         element.remove()
       }
-      // if (element.dataset.ogCode) {
-      //   iframe.allow = `clipboard-write self ${getEmbedUrl()}`
-      // }
+      if (element.dataset.ogCode) {
+        iframe.allow = `clipboard-write self ${getEmbedUrl()}`
+      }
       element.after(iframe)
       this.addListenerCallback(this.getWidgetListenerCallback(iframe))
     },
