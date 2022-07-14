@@ -3150,9 +3150,11 @@ var Link = function Link(slug, params) {
 };
 
 var Widget = function Widget(_a) {
-  var slug = _a.matches.slug;
+  var _b = _a.matches,
+      slug = _b.slug,
+      source = _b.source;
   return (0, _preact.h)(_WidgetWrapper.WidgetWrapper, null, (0, _preact.h)(_Button.Button, {
-    href: (0, _Routes.getExternalUrl)("".concat((0, _Routes.tripLink)(slug), "?source=").concat(encodeURIComponent(window.parent.location.origin)))
+    href: (0, _Routes.getExternalUrl)("".concat((0, _Routes.tripLink)(slug), "?source=").concat(encodeURIComponent(source)))
   }, "Book Now"));
 };
 
@@ -5402,7 +5404,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49462" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56787" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
