@@ -112,7 +112,7 @@ const IFRAME_ATTRIBUTES = {
           data: { type, name },
         } = event as MessageEvent<EmbedMessage>
         console.log(event);
-        if (getEmbedUrl().startsWith(origin) && iframe.name === name) {
+        if (getEmbedUrl().startsWith(origin) && iframe.name === (event.source as Window)?.name) {
           switch (type) {
             case 'size':
               const { width, height } = event.data as EmbedSizeMessage
