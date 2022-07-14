@@ -17,7 +17,6 @@ export type Dimension = {
 }
 export type MessageSenderOptions = {
   target: Window
-  name: string
   targetOrigin?: string
 }
 

@@ -9,7 +9,7 @@ export const WidgetWrapper: FunctionComponent = ({ children }) => {
   const { width, height } = useEmbedSize()
   useEffect(() => {
     if (width && height) {
-      send({ type: 'size', name: window.name, width, height } as EmbedSizeMessage, { target: window.parent })
+      send({ type: 'size', width, height } as EmbedSizeMessage, { target: window.parent })
     }
   }, [width, height])
 
