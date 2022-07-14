@@ -3,8 +3,10 @@ import { useEffect, useRef, useState } from 'preact/hooks'
 export const Snippet: FunctionComponent<{ code: string; onCopy?: (text: string) => void }> = ({ code, onCopy }) => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>()
   const [focused, setFocused] = useState<boolean>(false)
+  const timeoutRef = useRef<NodeJS.Timeout>()
   const onFocus = async (e: FocusEvent) => {
     const target = e.target as HTMLTextAreaElement
+
     setFocused(true)
     try {
       await navigator.clipboard.writeText(target.value)
@@ -15,12 +17,17 @@ export const Snippet: FunctionComponent<{ code: string; onCopy?: (text: string) 
   useEffect(() => {
     if (focused) {
       textAreaRef.current?.blur()
-      setFocused(false)
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+      timeoutRef.current = setTimeout(() => {
+        setFocused(false)
+      }, 1000)
     }
   }, [setFocused, focused])
   return (
     <div class={`snippet-preview${focused ? ' snippet-preview--focused' : ''}`}>
-      <div class="snippet-preview__info">Copied!</div>
+      <div class="snippet-preview__info" />
       <textarea
         readonly={true}
         class="snippet-preview__textarea"

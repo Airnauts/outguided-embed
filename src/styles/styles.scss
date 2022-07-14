@@ -52,11 +52,20 @@ body {
     .snippet-preview__info {
       opacity: 1;
       transition: none;
+      background-color: #a53820;
+      &:after {
+        content: 'Copied to clipboard!';
+      }
+    }
+  }
+  &:hover:not(.snippet-preview--focused) {
+    .snippet-preview__info {
+      background-color: rgba(#a53820, 0.5);
     }
   }
   &__info {
     pointer-events: none;
-    opacity: 0;
+    opacity: 1;
     position: absolute;
     top: 0;
     left: 0;
@@ -65,11 +74,14 @@ body {
     font-size: 22px;
     font-weight: 500;
     color: #fff;
-    background-color: #a53820;
+    background-color: rgba(#949494, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: opacity 0.5s ease-out;
+    transition: all 0.3s ease;
+    &:after {
+      content: 'Click here to copy';
+    }
   }
 
   &__textarea {
