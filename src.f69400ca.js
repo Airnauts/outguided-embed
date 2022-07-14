@@ -2852,10 +2852,8 @@ var WidgetWrapper = function WidgetWrapper(_a) {
 
   (0, _hooks.useEffect)(function () {
     if (width && height) {
-      console.log(window);
       (0, _messenger.send)({
         type: 'size',
-        name: window.name,
         width: width,
         height: height
       }, {
@@ -5179,7 +5177,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64486" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65277" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

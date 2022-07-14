@@ -296,8 +296,6 @@ exports.unregister = unregister;
 
 var _Routes = require("./config/Routes");
 
-var _helper = require("./utils/helper");
-
 var _messenger = require("./utils/messenger");
 
 var IFRAME_STYLES = {
@@ -376,8 +374,8 @@ var IFRAME_ATTRIBUTES = {
     },
     createIframe: function createIframe(src) {
       var iframe = document.createElement('iframe');
-      iframe.src = src;
-      iframe.name = "od-widget-".concat((0, _helper.getId)());
+      iframe.src = src; // iframe.name = `od-widget-${getId()}`
+
       Object.keys(IFRAME_ATTRIBUTES).forEach(function (attribute) {
         return iframe.setAttribute(attribute, IFRAME_ATTRIBUTES[attribute]);
       });
@@ -388,13 +386,13 @@ var IFRAME_ATTRIBUTES = {
     },
     getWidgetListenerCallback: function getWidgetListenerCallback(iframe) {
       return function (event) {
-        var _a = event,
-            origin = _a.origin,
-            _b = _a.data,
-            type = _b.type,
-            name = _b.name;
+        var _a;
 
-        if ((0, _Routes.getEmbedUrl)().startsWith(origin) && iframe.name === name) {
+        var _b = event,
+            origin = _b.origin,
+            type = _b.data.type;
+
+        if ((0, _Routes.getEmbedUrl)().startsWith(origin) && iframe.name === ((_a = event.source) === null || _a === void 0 ? void 0 : _a.name)) {
           switch (type) {
             case 'size':
               var _c = event.data,
@@ -423,7 +421,7 @@ var IFRAME_ATTRIBUTES = {
     window.OGWidgets = OGWidgets;
   }
 })(window);
-},{"./config/Routes":"config/Routes.ts","./utils/helper":"utils/helper.ts","./utils/messenger":"utils/messenger.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./config/Routes":"config/Routes.ts","./utils/messenger":"utils/messenger.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -451,7 +449,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64486" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65277" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
