@@ -378,9 +378,16 @@ var IFRAME_ATTRIBUTES = {
       return url ? typeof ogCode !== 'undefined' ? (0, _Routes.getEmbedSnippetUrl)(url) : (0, _Routes.getEmbedUrl)(url) : null;
     },
     createIframe: function createIframe(src) {
-      var iframe = document.createElement('iframe');
+      var iframe;
+
+      try {
+        iframe = document.createElement('<iframe name="' + (0, _helper.getId)() + '"></iframe>');
+      } catch (e) {
+        iframe = document.createElement('iframe');
+        iframe.name = (0, _helper.getId)();
+      }
+
       iframe.src = src;
-      iframe.name = "od-widget-".concat((0, _helper.getId)());
       Object.keys(IFRAME_ATTRIBUTES).forEach(function (attribute) {
         return iframe.setAttribute(attribute, IFRAME_ATTRIBUTES[attribute]);
       });
@@ -454,7 +461,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56235" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58260" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
