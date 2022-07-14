@@ -121,7 +121,8 @@ const IFRAME_ATTRIBUTES = {
               break
             case 'copy':
               const { text } = event.data as EmbedCopyMessage
-              navigator.clipboard.writeText(text)
+              console.log('copy text', text)
+              window.navigator.clipboard.writeText(text)
               break
             default:
               console.log(event.data)
