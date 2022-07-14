@@ -26,8 +26,6 @@ export const Snippet: FunctionComponent<{ code: string; onCopy?: (text: string) 
         class="snippet-preview__textarea"
         ref={(ref) => (textAreaRef.current = ref)}
         onFocus={onFocus}
-        cols={80}
-        rows={7}
         dangerouslySetInnerHTML={{
           __html: code,
         }}
