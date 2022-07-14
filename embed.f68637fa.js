@@ -296,6 +296,8 @@ exports.unregister = unregister;
 
 var _Routes = require("./config/Routes");
 
+var _helper = require("./utils/helper");
+
 var _messenger = require("./utils/messenger");
 
 var IFRAME_STYLES = {
@@ -356,6 +358,10 @@ var IFRAME_ATTRIBUTES = {
         element.remove();
       };
 
+      if (element.dataset.ogCode) {
+        iframe.allow = "clipboard-write self ".concat((0, _Routes.getEmbedUrl)());
+      }
+
       element.after(iframe);
       this.addListenerCallback(this.getWidgetListenerCallback(iframe));
     },
@@ -374,8 +380,8 @@ var IFRAME_ATTRIBUTES = {
     },
     createIframe: function createIframe(src) {
       var iframe = document.createElement('iframe');
-      iframe.src = src; // iframe.name = `od-widget-${getId()}`
-
+      iframe.src = src;
+      iframe.name = "od-widget-".concat((0, _helper.getId)());
       Object.keys(IFRAME_ATTRIBUTES).forEach(function (attribute) {
         return iframe.setAttribute(attribute, IFRAME_ATTRIBUTES[attribute]);
       });
@@ -421,7 +427,7 @@ var IFRAME_ATTRIBUTES = {
     window.OGWidgets = OGWidgets;
   }
 })(window);
-},{"./config/Routes":"config/Routes.ts","./utils/messenger":"utils/messenger.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./config/Routes":"config/Routes.ts","./utils/helper":"utils/helper.ts","./utils/messenger":"utils/messenger.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -449,7 +455,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65277" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55882" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
