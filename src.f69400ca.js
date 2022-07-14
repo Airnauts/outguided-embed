@@ -3043,6 +3043,8 @@ var Snippet = function Snippet(_a) {
       focused = _b[0],
       setFocused = _b[1];
 
+  var timeoutRef = (0, _hooks.useRef)();
+
   var onFocus = function onFocus(e) {
     return __awaiter(void 0, void 0, void 0, function () {
       var target, e_1;
@@ -3088,14 +3090,21 @@ var Snippet = function Snippet(_a) {
 
     if (focused) {
       (_a = textAreaRef.current) === null || _a === void 0 ? void 0 : _a.blur();
-      setFocused(false);
+
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      timeoutRef.current = setTimeout(function () {
+        setFocused(false);
+      }, 1000);
     }
   }, [setFocused, focused]);
   return (0, _preact.h)("div", {
     class: "snippet-preview".concat(focused ? ' snippet-preview--focused' : '')
   }, (0, _preact.h)("div", {
     class: "snippet-preview__info"
-  }, "Copied!"), (0, _preact.h)("textarea", {
+  }), (0, _preact.h)("textarea", {
     readonly: true,
     class: "snippet-preview__textarea",
     ref: function ref(_ref) {
@@ -3130,12 +3139,14 @@ var _helper = require("src/utils/helper");
 var _Snippet = require("src/components/Snippet/Snippet");
 
 var Link = function Link(slug, params) {
+  var _a;
+
   if (params === void 0) {
     params = {};
   }
 
   var link = (0, _Routes.getExternalUrl)((0, _Routes.tripLink)(slug));
-  return (0, _helper.getSnippetLink)(link, params.withEmbedCode ? 'Embed Code' : 'Book Now', params);
+  return (0, _helper.getSnippetLink)(link, typeof ((_a = params.data) === null || _a === void 0 ? void 0 : _a.code) !== 'undefined' ? 'Embed Code' : 'Book Now', params);
 };
 
 var Widget = function Widget(_a) {
@@ -5391,7 +5402,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60686" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49462" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
