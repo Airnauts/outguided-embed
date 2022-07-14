@@ -8,7 +8,7 @@ import { SnippetParams } from 'src/types'
 
 const Link = (slug: string, params: SnippetParams = {}) => {
   const link = getExternalUrl(tripLink(slug))
-  return getSnippetLink(link, params.withEmbedCode ? 'Embed Code' : 'Book Now', params)
+  return getSnippetLink(link, typeof params.data?.code !== 'undefined' ? 'Embed Code' : 'Book Now', params)
 }
 
 const Widget: FunctionComponent<{ matches: { slug: string } }> = ({ matches: { slug } }) => {
