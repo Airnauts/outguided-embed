@@ -2855,7 +2855,8 @@ var WidgetWrapper = function WidgetWrapper(_a) {
       (0, _messenger.send)({
         type: 'size',
         width: width,
-        height: height
+        height: height,
+        name: window.name
       }, {
         target: window.parent
       });
@@ -3032,21 +3033,11 @@ var Snippet = function Snippet(_a) {
     return __awaiter(void 0, void 0, void 0, function () {
       var target;
       return __generator(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            target = e.target;
-            setFocused(true);
-            return [4
-            /*yield*/
-            , navigator.clipboard.writeText(target.value)];
-
-          case 1:
-            _a.sent();
-
-            return [2
-            /*return*/
-            ];
-        }
+        target = e.target;
+        setFocused(true);
+        return [2
+        /*return*/
+        ];
       });
     });
   };
@@ -5369,7 +5360,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55882" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56235" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

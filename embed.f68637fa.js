@@ -356,11 +356,10 @@ var IFRAME_ATTRIBUTES = {
 
       iframe.onload = function () {
         element.remove();
-      };
+      }; // if (element.dataset.ogCode) {
+      //   iframe.allow = `clipboard-write self ${getEmbedUrl()}`
+      // }
 
-      if (element.dataset.ogCode) {
-        iframe.allow = "clipboard-write self ".concat((0, _Routes.getEmbedUrl)());
-      }
 
       element.after(iframe);
       this.addListenerCallback(this.getWidgetListenerCallback(iframe));
@@ -392,13 +391,13 @@ var IFRAME_ATTRIBUTES = {
     },
     getWidgetListenerCallback: function getWidgetListenerCallback(iframe) {
       return function (event) {
-        var _a;
+        var _a = event,
+            origin = _a.origin,
+            _b = _a.data,
+            type = _b.type,
+            name = _b.name;
 
-        var _b = event,
-            origin = _b.origin,
-            type = _b.data.type;
-
-        if ((0, _Routes.getEmbedUrl)().startsWith(origin) && iframe.name === ((_a = event.source) === null || _a === void 0 ? void 0 : _a.name)) {
+        if ((0, _Routes.getEmbedUrl)().startsWith(origin) && iframe.name === name) {
           switch (type) {
             case 'size':
               var _c = event.data,
@@ -455,7 +454,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55882" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56235" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
