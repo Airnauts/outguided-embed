@@ -3102,8 +3102,6 @@ var Snippet = function Snippet(_a) {
       return textAreaRef.current = _ref;
     },
     onFocus: onFocus,
-    cols: 80,
-    rows: 7,
     dangerouslySetInnerHTML: {
       __html: code
     }
@@ -3137,7 +3135,7 @@ var Link = function Link(slug, params) {
   }
 
   var link = (0, _Routes.getExternalUrl)((0, _Routes.tripLink)(slug));
-  return (0, _helper.getSnippetLink)(link, 'Book Now', params);
+  return (0, _helper.getSnippetLink)(link, params.withEmbedCode ? 'Embed Code' : 'Book Now', params);
 };
 
 var Widget = function Widget(_a) {
@@ -5393,7 +5391,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52522" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60686" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

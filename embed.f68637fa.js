@@ -358,10 +358,6 @@ var IFRAME_ATTRIBUTES = {
         element.remove();
       };
 
-      if (element.dataset.ogCode) {
-        iframe.allow = "";
-      }
-
       element.after(iframe);
       this.addListenerCallback(this.getWidgetListenerCallback(iframe));
     },
@@ -382,7 +378,7 @@ var IFRAME_ATTRIBUTES = {
       var iframe;
 
       try {
-        iframe = document.createElement('<iframe name="' + (0, _helper.getId)() + '" allow="clipboard-write"></iframe>');
+        iframe = document.createElement('<iframe name="' + (0, _helper.getId)() + '"></iframe>');
       } catch (e) {
         iframe = document.createElement('iframe');
         iframe.name = (0, _helper.getId)();
@@ -404,7 +400,7 @@ var IFRAME_ATTRIBUTES = {
             _b = _a.data,
             type = _b.type,
             name = _b.name;
-        console.log(event);
+        console.log('event received from iframe', event.data);
 
         if ((0, _Routes.getEmbedUrl)().startsWith(origin) && iframe.name === name) {
           switch (type) {
@@ -469,7 +465,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52522" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60686" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

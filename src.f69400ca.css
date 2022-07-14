@@ -69,13 +69,27 @@ body {
   transition: opacity 0.5s ease-out;
 }
 .snippet-preview__textarea {
+  width: auto;
+  max-width: 100%;
+  min-height: 150px;
   cursor: pointer;
   padding: 10px;
   user-select: none;
   resize: none;
+  overflow: hidden;
 }
 .snippet-preview__textarea:focus {
   outline: none;
+}
+@media only screen and (min-width: 600px) {
+  .snippet-preview__textarea {
+    min-width: 300px;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .snippet-preview__textarea {
+    min-width: 500px;
+  }
 }
 
 form {
