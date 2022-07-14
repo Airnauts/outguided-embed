@@ -10,10 +10,6 @@ export interface EmbedSizeMessage extends EmbedMessage {
   width: Dimension['width']
   height: Dimension['height']
 }
-export interface EmbedIdMessage extends EmbedMessage {
-  type: 'id'
-  id: string
-}
 
 export type Dimension = {
   width: number
@@ -21,7 +17,7 @@ export type Dimension = {
 }
 export type MessageSenderOptions = {
   target: Window
-  id: string
+  name: string
   targetOrigin?: string
 }
 
