@@ -91,7 +91,7 @@ const IFRAME_ATTRIBUTES = {
     createIframe: function (src) {
       const iframe = document.createElement('iframe')
       iframe.src = src
-      iframe.name = `od-widget-${getId()}`
+      // iframe.name = `od-widget-${getId()}`
       Object.keys(IFRAME_ATTRIBUTES).forEach((attribute) => iframe.setAttribute(attribute, IFRAME_ATTRIBUTES[attribute]))
       Object.keys(IFRAME_STYLES).forEach((style) => iframe.style.setProperty(style, IFRAME_STYLES[style]))
       return iframe
