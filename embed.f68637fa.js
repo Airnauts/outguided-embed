@@ -404,6 +404,7 @@ var IFRAME_ATTRIBUTES = {
             _b = _a.data,
             type = _b.type,
             name = _b.name;
+        console.log(event);
 
         if ((0, _Routes.getEmbedUrl)().startsWith(origin) && iframe.name === name) {
           switch (type) {
@@ -417,7 +418,8 @@ var IFRAME_ATTRIBUTES = {
 
             case 'copy':
               var text = event.data.text;
-              navigator.clipboard.writeText(text);
+              console.log('copy text', text);
+              window.navigator.clipboard.writeText(text);
               break;
 
             default:
@@ -467,7 +469,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50556" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52522" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
