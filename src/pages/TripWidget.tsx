@@ -11,10 +11,10 @@ const Link = (slug: string, params: SnippetParams = {}) => {
   return getSnippetLink(link, typeof params.data?.code !== 'undefined' ? 'Embed Code' : 'Book Now', params)
 }
 
-const Widget: FunctionComponent<{ matches: { slug: string } }> = ({ matches: { slug } }) => {
+const Widget: FunctionComponent<{ matches: { slug: string; source: string } }> = ({ matches: { slug, source } }) => {
   return (
     <WidgetWrapper>
-      <Button href={getExternalUrl(`${tripLink(slug)}?source=${encodeURIComponent(window.parent.location.origin)}`)}>Book Now</Button>
+      <Button href={getExternalUrl(`${tripLink(slug)}?source=${encodeURIComponent(source)}`)}>Book Now</Button>
     </WidgetWrapper>
   )
 }
