@@ -72,9 +72,6 @@ const IFRAME_ATTRIBUTES = {
       iframe.onload = () => {
         element.remove()
       }
-      if (element.dataset.ogCode) {
-        iframe.allow = ``
-      }
       element.after(iframe)
       this.addListenerCallback(this.getWidgetListenerCallback(iframe))
     },
@@ -94,12 +91,11 @@ const IFRAME_ATTRIBUTES = {
     createIframe: function (src) {
       let iframe: HTMLIFrameElement
       try {
-        iframe = document.createElement('<iframe name="' + getId() + '" allow="clipboard-write"></iframe>') as HTMLIFrameElement
+        iframe = document.createElement('<iframe name="' + getId() + '"></iframe>') as HTMLIFrameElement
       } catch (e) {
         iframe = document.createElement('iframe')
         iframe.name = getId()
       }
-
       iframe.src = src
       Object.keys(IFRAME_ATTRIBUTES).forEach((attribute) => iframe.setAttribute(attribute, IFRAME_ATTRIBUTES[attribute]))
       Object.keys(IFRAME_STYLES).forEach((style) => iframe.style.setProperty(style, IFRAME_STYLES[style]))
@@ -111,7 +107,7 @@ const IFRAME_ATTRIBUTES = {
           origin,
           data: { type, name },
         } = event as MessageEvent<EmbedMessage>
-        console.log(event);
+        console.log('event received from iframe', event.data)
         if (getEmbedUrl().startsWith(origin) && iframe.name === name) {
           switch (type) {
             case 'size':
