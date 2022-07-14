@@ -7,7 +7,7 @@ export const Snippet: FunctionComponent<{ code: string }> = ({ code }) => {
   const onFocus = async (e: FocusEvent) => {
     const target = e.target as HTMLTextAreaElement
     setFocused(true)
-    await navigator.clipboard.writeText(target.value)
+    // await navigator.clipboard.writeText(target.value)
   }
   useEffect(() => {
     if (focused) {
