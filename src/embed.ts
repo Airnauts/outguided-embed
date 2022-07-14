@@ -92,8 +92,14 @@ const IFRAME_ATTRIBUTES = {
       return url ? (typeof ogCode !== 'undefined' ? getEmbedSnippetUrl(url) : getEmbedUrl(url)) : null
     },
     createIframe: function (src) {
-      const iframe = document.createElement('iframe')
-      iframe.name = `od-widget-${getId()}`
+      let iframe: HTMLIFrameElement
+      try {
+        iframe = document.createElement('<iframe name="' + getId() + '"></iframe>') as HTMLIFrameElement
+      } catch (e) {
+        iframe = document.createElement('iframe')
+        iframe.name = getId()
+      }
+
       iframe.src = src
       Object.keys(IFRAME_ATTRIBUTES).forEach((attribute) => iframe.setAttribute(attribute, IFRAME_ATTRIBUTES[attribute]))
       Object.keys(IFRAME_STYLES).forEach((style) => iframe.style.setProperty(style, IFRAME_STYLES[style]))
