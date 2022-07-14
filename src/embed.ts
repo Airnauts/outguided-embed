@@ -1,5 +1,5 @@
 import { getEmbedSnippetUrl, getEmbedUrl, getExternalUrl, getHostSlugFromUrl, getTripSlugFromUrl, hostLink, tripLink } from './config/Routes'
-import { EmbedMessage, EmbedSizeMessage, MessageListenerCallback } from './types'
+import { EmbedCopyMessage, EmbedMessage, EmbedSizeMessage, MessageListenerCallback } from './types'
 import { getId } from './utils/helper'
 import { register } from './utils/messenger'
 declare global {
@@ -73,7 +73,7 @@ const IFRAME_ATTRIBUTES = {
         element.remove()
       }
       if (element.dataset.ogCode) {
-        iframe.allow = `clipboard-write self ${getEmbedUrl()}`
+        iframe.allow = ``
       }
       element.after(iframe)
       this.addListenerCallback(this.getWidgetListenerCallback(iframe))
@@ -93,14 +93,14 @@ const IFRAME_ATTRIBUTES = {
     },
     createIframe: function (src) {
       let iframe: HTMLIFrameElement
-      // try {
-      //   iframe = document.createElement('<iframe name="' + getId() + '"></iframe>') as HTMLIFrameElement
-      // } catch (e) {
-      
-      // }
-      iframe = document.createElement('iframe')
+      try {
+        iframe = document.createElement('<iframe name="' + getId() + '" allow="clipboard-write"></iframe>') as HTMLIFrameElement
+      } catch (e) {
+        iframe = document.createElement('iframe')
+        iframe.name = getId()
+      }
+
       iframe.src = src
-      iframe.name = getId()
       Object.keys(IFRAME_ATTRIBUTES).forEach((attribute) => iframe.setAttribute(attribute, IFRAME_ATTRIBUTES[attribute]))
       Object.keys(IFRAME_STYLES).forEach((style) => iframe.style.setProperty(style, IFRAME_STYLES[style]))
       return iframe
@@ -118,6 +118,10 @@ const IFRAME_ATTRIBUTES = {
               const { width, height } = event.data as EmbedSizeMessage
               iframe.style.height = height + 'px'
               iframe.style.width = width + 'px'
+              break
+            case 'copy':
+              const { text } = event.data as EmbedCopyMessage
+              navigator.clipboard.writeText(text)
               break
             default:
               console.log(event.data)

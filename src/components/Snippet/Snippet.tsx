@@ -1,13 +1,16 @@
 import { h, Fragment, FunctionComponent } from 'preact'
 import { useEffect, useRef, useState } from 'preact/hooks'
-export const Snippet: FunctionComponent<{ code: string }> = ({ code }) => {
+export const Snippet: FunctionComponent<{ code: string; onCopy?: (text: string) => void }> = ({ code, onCopy }) => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>()
   const [focused, setFocused] = useState<boolean>(false)
-
   const onFocus = async (e: FocusEvent) => {
     const target = e.target as HTMLTextAreaElement
     setFocused(true)
-    await navigator.clipboard.writeText(target.value)
+    try {
+      await navigator.clipboard.writeText(target.value)
+    } catch (e) {
+      onCopy?.(target.value)
+    }
   }
   useEffect(() => {
     if (focused) {

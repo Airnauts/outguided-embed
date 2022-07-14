@@ -1,7 +1,7 @@
 import { FunctionComponent, ComponentChild, JSX } from 'preact'
 
 export interface EmbedMessage {
-  type: 'size' | 'id'
+  type: 'size' | 'copy'
   name: string
   [key: string]: any
 }
@@ -10,6 +10,10 @@ export interface EmbedSizeMessage extends EmbedMessage {
   type: 'size'
   width: Dimension['width']
   height: Dimension['height']
+}
+export interface EmbedCopyMessage extends EmbedMessage {
+  type: 'copy'
+  text: string
 }
 
 export type Dimension = {

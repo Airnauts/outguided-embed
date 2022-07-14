@@ -1,10 +1,10 @@
-import { h, Fragment, FunctionComponent } from 'preact'
+import { h, Fragment, FunctionComponent, cloneElement, ComponentChildren, VNode } from 'preact'
 import { useEffect } from 'preact/hooks'
 import { send } from 'src/utils/messenger'
 import { useEmbedSize } from 'src/hooks/useEmbedSize'
-import { EmbedSizeMessage } from 'src/types'
+import { EmbedCopyMessage, EmbedSizeMessage } from 'src/types'
 
-export const WidgetWrapper: FunctionComponent = ({ children }) => {
+export const WidgetWrapper: FunctionComponent<{ children: VNode }> = ({ children }) => {
   const { width, height } = useEmbedSize()
   useEffect(() => {
     if (width && height) {
@@ -12,5 +12,8 @@ export const WidgetWrapper: FunctionComponent = ({ children }) => {
     }
   }, [width, height])
 
-  return <Fragment>{children}</Fragment>
+  const onCopy = (text: string) => {
+    send({ type: 'copy', text, name: window.name } as EmbedCopyMessage, { target: window.parent })
+  }
+  return <Fragment>{cloneElement(children, { onCopy })}</Fragment>
 }
