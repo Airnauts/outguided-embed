@@ -4203,8 +4203,7 @@ const Widgets = ()=>{
             __html: (0, _tripWidget.TripWidget).Link(data.slug, {
                 data: {
                     code: ""
-                },
-                withEmbedCode: true
+                }
             })
         },
         __source: {

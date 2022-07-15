@@ -534,6 +534,7 @@ function hmrAcceptRun(bundle, id) {
 },{}],"kf4kV":[function(require,module,exports) {
 var _routes = require("./config/Routes");
 var _helper = require("./utils/helper");
+var _log = require("./utils/log");
 var _messenger = require("./utils/messenger");
 const IFRAME_STYLES = {
     border: "none",
@@ -605,7 +606,7 @@ const IFRAME_ATTRIBUTES = {
         getWidgetListenerCallback: function(iframe) {
             return (event)=>{
                 const { origin , data: { type , name  } ,  } = event;
-                console.log("event received from iframe", event.data);
+                (0, _log.log)("received event:", event.data);
                 if ((0, _routes.getEmbedUrl)().startsWith(origin) && iframe.name === name) switch(type){
                     case "size":
                         const { width , height  } = event.data;
@@ -614,11 +615,9 @@ const IFRAME_ATTRIBUTES = {
                         break;
                     case "copy":
                         const { text  } = event.data;
-                        console.log("copy text", text);
                         window.navigator.clipboard.writeText(text);
                         break;
                     default:
-                        console.log(event.data);
                         break;
                 }
             };
@@ -631,6 +630,12 @@ const IFRAME_ATTRIBUTES = {
     }
 })(window);
 
-},{"./config/Routes":"aU9Qo","./utils/helper":"3uqAg","./utils/messenger":"cqgH5"}]},["geUin"], null, "parcelRequire7009")
+},{"./config/Routes":"aU9Qo","./utils/helper":"3uqAg","./utils/messenger":"cqgH5","./utils/log":"aMCJ1"}],"aMCJ1":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "log", ()=>log);
+const log = (message, ...optionalParams)=>{};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["geUin"], null, "parcelRequire7009")
 
 //# sourceMappingURL=embed.fd23351f.js.map
