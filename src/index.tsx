@@ -9,6 +9,7 @@ import './styles/styles.scss'
 import { Widgets } from './pages/Widgets'
 
 const App = () => {
+  console.log(process.env.NODE_ENV)
   return (
     <SWRConfig
       value={{
