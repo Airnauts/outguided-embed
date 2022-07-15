@@ -1,6 +1,7 @@
 import { getEmbedSnippetUrl, getEmbedUrl, getExternalUrl, getHostSlugFromUrl, getTripSlugFromUrl, hostLink, tripLink } from './config/Routes'
 import { EmbedCopyMessage, EmbedMessage, EmbedSizeMessage, MessageListenerCallback } from './types'
 import { getId } from './utils/helper'
+import { log } from './utils/log'
 import { register } from './utils/messenger'
 declare global {
   interface Window {
@@ -107,7 +108,9 @@ const IFRAME_ATTRIBUTES = {
           origin,
           data: { type, name },
         } = event as MessageEvent<EmbedMessage>
-        console.log('event received from iframe', event.data)
+
+        log('received event:', event.data)
+
         if (getEmbedUrl().startsWith(origin) && iframe.name === name) {
           switch (type) {
             case 'size':
@@ -117,11 +120,9 @@ const IFRAME_ATTRIBUTES = {
               break
             case 'copy':
               const { text } = event.data as EmbedCopyMessage
-              console.log('copy text', text)
               window.navigator.clipboard.writeText(text)
               break
             default:
-              console.log(event.data)
               break
           }
         }

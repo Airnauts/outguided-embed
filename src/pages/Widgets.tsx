@@ -46,7 +46,7 @@ export const Widgets: FunctionComponent<{}> = () => {
           <h3>Place this Link inside you page content where you want to show code</h3>
           <Snippet code={TripWidget.Link(data.slug, { withEmbedCode: true, data: { code: '' } })} />
           <h4 class="preview__title">Widget preview:</h4>
-          <div class="preview" dangerouslySetInnerHTML={{ __html: TripWidget.Link(data.slug, { data: { code: '' }, withEmbedCode: true }) }} />
+          <div class="preview" dangerouslySetInnerHTML={{ __html: TripWidget.Link(data.slug, { data: { code: '' }}) }} />
         </Fragment>
       )}
     </div>
