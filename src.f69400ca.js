@@ -2601,7 +2601,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.EXAMPLE_TRIP = exports.EMBED_SCRIPT = void 0;
 var EMBED_SCRIPT = "<script async src=\"".concat("http://localhost:1234", "/embed.js\"></script>");
 exports.EMBED_SCRIPT = EMBED_SCRIPT;
-var EXAMPLE_TRIP = 'https://www.outguided.com/experiences/24-hours-in-browns-canyon-deluxe-overnight-camping-experience-like-nothing-out-there-granite';
+var EXAMPLE_TRIP = "" || '';
 exports.EXAMPLE_TRIP = EXAMPLE_TRIP;
 },{}],"utils/helper.ts":[function(require,module,exports) {
 "use strict";
@@ -3037,7 +3037,7 @@ var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
 var Snippet = function Snippet(_a) {
   var code = _a.code,
       onCopy = _a.onCopy;
-  var textAreaRef = (0, _hooks.useRef)();
+  var textAreaRef = (0, _hooks.useRef)(null);
 
   var _b = (0, _hooks.useState)(false),
       focused = _b[0],
@@ -3045,33 +3045,33 @@ var Snippet = function Snippet(_a) {
 
   var timeoutRef = (0, _hooks.useRef)();
 
-  var onFocus = function onFocus(e) {
+  var onFocus = function onFocus(_a) {
+    var currentTarget = _a.currentTarget;
     return __awaiter(void 0, void 0, void 0, function () {
-      var target, e_1;
-      return __generator(this, function (_a) {
-        switch (_a.label) {
+      var e_1;
+      return __generator(this, function (_b) {
+        switch (_b.label) {
           case 0:
-            target = e.target;
             setFocused(true);
-            _a.label = 1;
+            _b.label = 1;
 
           case 1:
-            _a.trys.push([1, 3,, 4]);
+            _b.trys.push([1, 3,, 4]);
 
             return [4
             /*yield*/
-            , navigator.clipboard.writeText(target.value)];
+            , navigator.clipboard.writeText(currentTarget.value)];
 
           case 2:
-            _a.sent();
+            _b.sent();
 
             return [3
             /*break*/
             , 4];
 
           case 3:
-            e_1 = _a.sent();
-            onCopy === null || onCopy === void 0 ? void 0 : onCopy(target.value);
+            e_1 = _b.sent();
+            onCopy === null || onCopy === void 0 ? void 0 : onCopy(currentTarget.value);
             return [3
             /*break*/
             , 4];
@@ -3105,11 +3105,8 @@ var Snippet = function Snippet(_a) {
   }, (0, _preact.h)("div", {
     class: "snippet-preview__info"
   }), (0, _preact.h)("textarea", {
-    readonly: true,
     class: "snippet-preview__textarea",
-    ref: function ref(_ref) {
-      return textAreaRef.current = _ref;
-    },
+    ref: textAreaRef,
     onFocus: onFocus,
     dangerouslySetInnerHTML: {
       __html: code
@@ -5356,6 +5353,7 @@ require("./styles/styles.scss");
 var _Widgets = require("./pages/Widgets");
 
 var App = function App() {
+  console.log("development");
   return (0, _preact.h)(_preactSwr.SWRConfig, {
     value: {
       fetcher: _fetcher.fetcher
@@ -5404,7 +5402,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59187" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49378" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

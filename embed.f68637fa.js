@@ -126,7 +126,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.EXAMPLE_TRIP = exports.EMBED_SCRIPT = void 0;
 var EMBED_SCRIPT = "<script async src=\"".concat("http://localhost:1234", "/embed.js\"></script>");
 exports.EMBED_SCRIPT = EMBED_SCRIPT;
-var EXAMPLE_TRIP = 'https://www.outguided.com/experiences/24-hours-in-browns-canyon-deluxe-overnight-camping-experience-like-nothing-out-there-granite';
+var EXAMPLE_TRIP = "" || '';
 exports.EXAMPLE_TRIP = EXAMPLE_TRIP;
 },{}],"utils/helper.ts":[function(require,module,exports) {
 "use strict";
@@ -465,7 +465,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59187" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49378" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
