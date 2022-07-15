@@ -117,153 +117,74 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"embed.ts":[function(require,module,exports) {
-"use strict";
+})({"../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+var bundleURL = null;
 
-var _Routes = require("./config/Routes");
+function getBundleURLCached() {
+  if (!bundleURL) {
+    bundleURL = getBundleURL();
+  }
 
-var _helper = require("./utils/helper");
+  return bundleURL;
+}
 
-var _messenger = require("./utils/messenger");
+function getBundleURL() {
+  // Attempt to find the URL of the current script and use that as the base URL
+  try {
+    throw new Error();
+  } catch (err) {
+    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
 
-var IFRAME_STYLES = {
-  border: 'none',
-  width: '0px',
-  height: '0px',
-  'overflow-x': 'hidden',
-  'overflow-y': 'hidden',
-  display: 'block'
-};
-var IFRAME_ATTRIBUTES = {
-  scrolling: 'no',
-  frameborder: '0',
-  allowtransparency: 'true',
-  allowfullscreen: 'true'
-};
-
-(function (window) {
-  var OGWidgets = {
-    processedWidgets: [],
-    listenerCallbacks: [],
-    listenerRegistered: false,
-    init: function init() {
-      this.registerListener();
-      var widgets = document.querySelectorAll("a[data-og-widget][href^=\"".concat((0, _Routes.getExternalUrl)(), "\"]"));
-      widgets.forEach(this.initializeWidget.bind(this));
-    },
-    registerListener: function registerListener() {
-      var _this = this;
-
-      if (!this.listenerRegistered) {
-        (0, _messenger.register)(function (ev) {
-          _this.listenerCallbacks.forEach(function (listener) {
-            return listener(ev);
-          });
-        });
-        this.listenerRegistered = true;
-      }
-    },
-    addListenerCallback: function addListenerCallback(listener) {
-      this.listenerCallbacks.push(listener);
-    },
-    initializeWidget: function initializeWidget(element) {
-      if (this.processedWidgets.includes(element)) {
-        return;
-      }
-
-      this.processedWidgets.push(element);
-      var url = this.getWidgetCallbackUrl(element);
-
-      if (!url) {
-        return;
-      }
-
-      var iframe = this.createIframe(url);
-
-      iframe.onload = function () {
-        element.remove();
-      };
-
-      element.after(iframe);
-      this.addListenerCallback(this.getWidgetListenerCallback(iframe));
-    },
-    getWidgetCallbackUrl: function getWidgetCallbackUrl(element) {
-      var url;
-      var href = element.href,
-          ogCode = element.dataset.ogCode;
-
-      if ((0, _Routes.getTripSlugFromUrl)(href)) {
-        url = (0, _Routes.tripLink)((0, _Routes.getTripSlugFromUrl)(href));
-      } else if ((0, _Routes.getHostSlugFromUrl)(href)) {
-        url = (0, _Routes.hostLink)((0, _Routes.getHostSlugFromUrl)(href));
-      }
-
-      return url ? typeof ogCode !== 'undefined' ? (0, _Routes.getEmbedSnippetUrl)(url) : (0, _Routes.getEmbedUrl)(url) : null;
-    },
-    createIframe: function createIframe(src) {
-      var iframe;
-
-      try {
-        iframe = document.createElement('<iframe name="' + (0, _helper.getId)() + '"></iframe>');
-      } catch (e) {
-        iframe = document.createElement('iframe');
-        iframe.name = (0, _helper.getId)();
-      }
-
-      iframe.src = src + '?source=' + encodeURIComponent(window.location.origin);
-      Object.keys(IFRAME_ATTRIBUTES).forEach(function (attribute) {
-        return iframe.setAttribute(attribute, IFRAME_ATTRIBUTES[attribute]);
-      });
-      Object.keys(IFRAME_STYLES).forEach(function (style) {
-        return iframe.style.setProperty(style, IFRAME_STYLES[style]);
-      });
-      return iframe;
-    },
-    getWidgetListenerCallback: function getWidgetListenerCallback(iframe) {
-      return function (event) {
-        var _a = event,
-            origin = _a.origin,
-            _b = _a.data,
-            type = _b.type,
-            name = _b.name;
-        console.log('event received from iframe', event.data);
-
-        if ((0, _Routes.getEmbedUrl)().startsWith(origin) && iframe.name === name) {
-          switch (type) {
-            case 'size':
-              var _c = event.data,
-                  width = _c.width,
-                  height = _c.height;
-              iframe.style.height = height + 'px';
-              iframe.style.width = width + 'px';
-              break;
-
-            case 'copy':
-              var text = event.data.text;
-              console.log('copy text', text);
-              window.navigator.clipboard.writeText(text);
-              break;
-
-            default:
-              console.log(event.data);
-              break;
-          }
-        }
-      };
+    if (matches) {
+      return getBaseURL(matches[0]);
     }
+  }
+
+  return '/';
+}
+
+function getBaseURL(url) {
+  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)?\/[^/]+(?:\?.*)?$/, '$1') + '/';
+}
+
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+},{}],"../node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
+var bundle = require('./bundle-url');
+
+function updateLink(link) {
+  var newLink = link.cloneNode();
+
+  newLink.onload = function () {
+    link.remove();
   };
 
-  if (!window.OGWidgets) {
-    OGWidgets.init();
+  newLink.href = link.href.split('?')[0] + '?' + Date.now();
+  link.parentNode.insertBefore(newLink, link.nextSibling);
+}
 
-    window.onload = function () {
-      return OGWidgets.init();
-    };
+var cssTimeout = null;
 
-    window.OGWidgets = OGWidgets;
+function reloadCSS() {
+  if (cssTimeout) {
+    return;
   }
-})(window);
-},{"./config/Routes":"config/Routes.ts","./utils/helper":"utils/helper.ts","./utils/messenger":"utils/messenger.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+
+  cssTimeout = setTimeout(function () {
+    var links = document.querySelectorAll('link[rel="stylesheet"]');
+
+    for (var i = 0; i < links.length; i++) {
+      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
+        updateLink(links[i]);
+      }
+    }
+
+    cssTimeout = null;
+  }, 50);
+}
+
+module.exports = reloadCSS;
+},{"./bundle-url":"../node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -468,4 +389,4 @@ function hmrAcceptRun(bundle, id) {
   }
 }
 },{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js"], null)
-//# sourceMappingURL=/embed.f68637fa.js.map
+//# sourceMappingURL=/index.js.map
