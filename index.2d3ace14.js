@@ -540,6 +540,7 @@ var _routes = require("./config/Routes");
 var _tripWidget = require("./pages/TripWidget");
 var _preactSwr = require("preact-swr");
 var _widgets = require("./pages/Widgets");
+var _hostWidget = require("./pages/HostWidget");
 const App = ()=>{
     return /*#__PURE__*/ (0, _preact.h)((0, _preactSwr.SWRConfig), {
         value: {
@@ -547,14 +548,14 @@ const App = ()=>{
         },
         __source: {
             fileName: "src/index.tsx",
-            lineNumber: 12,
+            lineNumber: 13,
             columnNumber: 5
         },
         __self: undefined
     }, /*#__PURE__*/ (0, _preact.h)((0, _preact.Fragment), {
         __source: {
             fileName: "src/index.tsx",
-            lineNumber: 17,
+            lineNumber: 18,
             columnNumber: 7
         },
         __self: undefined
@@ -562,7 +563,7 @@ const App = ()=>{
         history: (0, _history.createHashHistory)(),
         __source: {
             fileName: "src/index.tsx",
-            lineNumber: 18,
+            lineNumber: 19,
             columnNumber: 9
         },
         __self: undefined
@@ -571,7 +572,7 @@ const App = ()=>{
         path: (0, _routes.getEmbedPath)((0, _routes.TRIP_PAGE)),
         __source: {
             fileName: "src/index.tsx",
-            lineNumber: 19,
+            lineNumber: 20,
             columnNumber: 11
         },
         __self: undefined
@@ -580,7 +581,25 @@ const App = ()=>{
         path: (0, _routes.getEmbedSnippetPath)((0, _routes.TRIP_PAGE)),
         __source: {
             fileName: "src/index.tsx",
-            lineNumber: 20,
+            lineNumber: 21,
+            columnNumber: 11
+        },
+        __self: undefined
+    }), /*#__PURE__*/ (0, _preact.h)((0, _preactRouter.Route), {
+        component: (0, _hostWidget.HostWidget),
+        path: (0, _routes.getEmbedPath)((0, _routes.HOST_PAGE)),
+        __source: {
+            fileName: "src/index.tsx",
+            lineNumber: 22,
+            columnNumber: 11
+        },
+        __self: undefined
+    }), /*#__PURE__*/ (0, _preact.h)((0, _preactRouter.Route), {
+        component: (0, _hostWidget.HostWidget).Code,
+        path: (0, _routes.getEmbedSnippetPath)((0, _routes.HOST_PAGE)),
+        __source: {
+            fileName: "src/index.tsx",
+            lineNumber: 23,
             columnNumber: 11
         },
         __self: undefined
@@ -589,7 +608,7 @@ const App = ()=>{
         default: true,
         __source: {
             fileName: "src/index.tsx",
-            lineNumber: 21,
+            lineNumber: 24,
             columnNumber: 11
         },
         __self: undefined
@@ -599,13 +618,13 @@ const root = document.getElementById("root");
 (0, _preact.render)(/*#__PURE__*/ (0, _preact.h)(App, {
     __source: {
         fileName: "src/index.tsx",
-        lineNumber: 28,
+        lineNumber: 31,
         columnNumber: 8
     },
     __self: undefined
 }), root);
 
-},{"preact":"26zcy","preact-router":"e4tGw","history":"iE5Zp","./api/fetcher":"bXfri","./config/Routes":"aU9Qo","./pages/TripWidget":"8KJcq","preact-swr":"bPA2W","./pages/Widgets":"BtK27"}],"26zcy":[function(require,module,exports) {
+},{"preact":"26zcy","preact-router":"e4tGw","history":"iE5Zp","./api/fetcher":"bXfri","./config/Routes":"aU9Qo","./pages/TripWidget":"8KJcq","preact-swr":"bPA2W","./pages/Widgets":"BtK27","./pages/HostWidget":"6SNaW"}],"26zcy":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "render", ()=>S);
@@ -2401,11 +2420,10 @@ parcelHelpers.export(exports, "getEmbedSnippetPath", ()=>getEmbedSnippetPath);
 parcelHelpers.export(exports, "getEmbedUrl", ()=>getEmbedUrl);
 parcelHelpers.export(exports, "getEmbedSnippetUrl", ()=>getEmbedSnippetUrl);
 parcelHelpers.export(exports, "getExternalUrl", ()=>getExternalUrl);
-var _helper = require("src/utils/helper");
 const TRIP_PAGE = "/experiences/:slugOrId";
 const HOST_PAGE = "/guides/:slugOrId";
-const getTripSlugFromUrl = (url)=>url.match(new RegExp(`^${(0, _helper.escapeRegExp)(getExternalUrl())}${TRIP_PAGE.replace(":slugOrId", "([^/?]+)")}`))?.[1];
-const getHostSlugFromUrl = (url)=>url.match(new RegExp(`^${(0, _helper.escapeRegExp)(getExternalUrl())}${HOST_PAGE.replace(":slugOrId", "([^/?]+)")}`))?.[1];
+const getTripSlugFromUrl = (url)=>url.match(new RegExp(`^.*${TRIP_PAGE.replace(":slugOrId", "([^/?]+)")}`))?.[1];
+const getHostSlugFromUrl = (url)=>url.match(new RegExp(`^.*${HOST_PAGE.replace(":slugOrId", "([^/?]+)")}`))?.[1];
 const tripLink = (slugOrId)=>TRIP_PAGE.replace(":slugOrId", slugOrId ? "" + slugOrId : "");
 const hostLink = (slugOrId)=>HOST_PAGE.replace(":slugOrId", slugOrId ? "" + slugOrId : "");
 const getEmbedPath = (path)=>`/embed${path}`;
@@ -2413,31 +2431,6 @@ const getEmbedSnippetPath = (path)=>`/code${path}`;
 const getEmbedUrl = (path)=>`${"http://localhost:1234"}${path ? `/#${getEmbedPath(path)}` : ""}`;
 const getEmbedSnippetUrl = (path)=>`${"http://localhost:1234"}${path ? `/#${getEmbedSnippetPath(path)}` : ""}`;
 const getExternalUrl = (path = "")=>`${"https://outguided-frontend-dev.herokuapp.com"}${path}`;
-
-},{"src/utils/helper":"3uqAg","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3uqAg":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "escapeRegExp", ()=>escapeRegExp);
-parcelHelpers.export(exports, "getSnippetLink", ()=>getSnippetLink);
-parcelHelpers.export(exports, "getId", ()=>getId);
-var _widgets = require("src/config/Widgets");
-const escapeRegExp = (string)=>string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const getSnippetLink = (url, label = "Powered by outguided.com", { data ={} , withEmbedCode  } = {})=>{
-    const attributeString = Object.keys({
-        ...data,
-        widget: ""
-    }).map((key)=>` data-og-${key}${data[key] ? `="${data[key]}"` : ""}`).join("");
-    return `<a href="${url}"${attributeString}>${label}</a>${withEmbedCode ? (0, _widgets.EMBED_SCRIPT) : ""}`;
-};
-const getId = ()=>String(Date.now().toString(32) + Math.random().toString(16)).replace(/\./g, "");
-
-},{"src/config/Widgets":"2pGEw","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"2pGEw":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "EMBED_SCRIPT", ()=>EMBED_SCRIPT);
-parcelHelpers.export(exports, "EXAMPLE_TRIP", ()=>EXAMPLE_TRIP);
-const EMBED_SCRIPT = `<script async src="${"http://localhost:1234"}/embed.js"></script>`;
-const EXAMPLE_TRIP = "https://outguided-frontend-dev.herokuapp.com/experiences/climbing-1";
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8KJcq":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -2608,7 +2601,32 @@ const useEmbedSize = ()=>{
     return dimension;
 };
 
-},{"preact/hooks":"eZN76","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gRvPY":[function(require,module,exports) {
+},{"preact/hooks":"eZN76","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3uqAg":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getSnippetLink", ()=>getSnippetLink);
+parcelHelpers.export(exports, "getId", ()=>getId);
+var _widgets = require("src/config/Widgets");
+const getSnippetLink = (url, label = "Powered by outguided.com", { data ={} , withEmbedCode  } = {})=>{
+    const attributeString = Object.keys({
+        ...data,
+        widget: ""
+    }).map((key)=>` data-og-${key}${data[key] ? `="${data[key]}"` : ""}`).join("");
+    return `<a href="${url}"${attributeString}>${label}</a>${withEmbedCode ? (0, _widgets.EMBED_SCRIPT) : ""}`;
+};
+const getId = ()=>String(Date.now().toString(32) + Math.random().toString(16)).replace(/\./g, "");
+
+},{"src/config/Widgets":"2pGEw","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"2pGEw":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "EMBED_SCRIPT", ()=>EMBED_SCRIPT);
+parcelHelpers.export(exports, "EXAMPLE_TRIP", ()=>EXAMPLE_TRIP);
+parcelHelpers.export(exports, "EXAMPLE_HOST", ()=>EXAMPLE_HOST);
+const EMBED_SCRIPT = `<script async src="${"http://localhost:1234"}/embed.js"></script>`;
+const EXAMPLE_TRIP = "https://outguided-frontend-dev.herokuapp.com/experiences/climbing-1";
+const EXAMPLE_HOST = "http://outguided-frontend-dev.herokuapp.com/guides/dsadsadsad32131sdsa1acxz";
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gRvPY":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Snippet", ()=>Snippet);
@@ -4061,14 +4079,20 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Widgets", ()=>Widgets);
 var _preact = require("preact");
 var _hooks = require("preact/hooks");
+var _host = require("src/api/host");
 var _trip = require("src/api/trip");
 var _snippet = require("src/components/Snippet/Snippet");
 var _routes = require("src/config/Routes");
 var _widgets = require("src/config/Widgets");
 var _tripWidget = require("src/pages/TripWidget");
+var _hostWidget = require("./HostWidget");
 const Widgets = ()=>{
     const [slug, setSlug] = (0, _hooks.useState)((0, _routes.getTripSlugFromUrl)((0, _widgets.EXAMPLE_TRIP)));
+    const [guideSlug, setGuideSlug] = (0, _hooks.useState)((0, _routes.getHostSlugFromUrl)((0, _widgets.EXAMPLE_HOST)));
     const { data , error , isValidating  } = (0, _trip.useTripBySlug)(slug, {
+        refreshInterval: 0
+    });
+    const { data: host , error: hostError , isValidating: isValidatingHost  } = (0, _host.useHostBySlug)(guideSlug, {
         refreshInterval: 0
     });
     (0, _hooks.useEffect)(()=>{
@@ -4086,21 +4110,14 @@ const Widgets = ()=>{
         class: "content",
         __source: {
             fileName: "src/pages/Widgets.tsx",
-            lineNumber: 27,
+            lineNumber: 31,
             columnNumber: 5
         },
         __self: undefined
-    }, /*#__PURE__*/ (0, _preact.h)("h3", {
+    }, /*#__PURE__*/ (0, _preact.h)("form", {
         __source: {
             fileName: "src/pages/Widgets.tsx",
-            lineNumber: 28,
-            columnNumber: 7
-        },
-        __self: undefined
-    }, "Enter experience URL:"), /*#__PURE__*/ (0, _preact.h)("form", {
-        __source: {
-            fileName: "src/pages/Widgets.tsx",
-            lineNumber: 29,
+            lineNumber: 32,
             columnNumber: 7
         },
         __self: undefined
@@ -4108,7 +4125,7 @@ const Widgets = ()=>{
         for: "tripUrl",
         __source: {
             fileName: "src/pages/Widgets.tsx",
-            lineNumber: 30,
+            lineNumber: 33,
             columnNumber: 9
         },
         __self: undefined
@@ -4119,38 +4136,57 @@ const Widgets = ()=>{
         onInput: ({ target  })=>setSlug((0, _routes.getTripSlugFromUrl)(target?.value)),
         __source: {
             fileName: "src/pages/Widgets.tsx",
-            lineNumber: 31,
+            lineNumber: 34,
             columnNumber: 9
         },
         __self: undefined
-    })), error && !isValidating && /*#__PURE__*/ (0, _preact.h)("h4", {
-        __source: {
-            fileName: "src/pages/Widgets.tsx",
-            lineNumber: 38,
-            columnNumber: 34
-        },
-        __self: undefined
-    }, error.message), data && /*#__PURE__*/ (0, _preact.h)((0, _preact.Fragment), {
+    }), /*#__PURE__*/ (0, _preact.h)("label", {
+        for: "hostUrl",
         __source: {
             fileName: "src/pages/Widgets.tsx",
             lineNumber: 40,
             columnNumber: 9
         },
         __self: undefined
-    }, /*#__PURE__*/ (0, _preact.h)("h3", {
+    }, "Host URL:"), /*#__PURE__*/ (0, _preact.h)("input", {
+        id: "hostUrl",
+        placeholder: "Enter Host Url from outguided.com",
+        defaultValue: (0, _widgets.EXAMPLE_HOST),
+        onInput: ({ target  })=>setSlug((0, _routes.getHostSlugFromUrl)(target?.value)),
         __source: {
             fileName: "src/pages/Widgets.tsx",
             lineNumber: 41,
+            columnNumber: 9
+        },
+        __self: undefined
+    })), error && !isValidating && /*#__PURE__*/ (0, _preact.h)("h4", {
+        __source: {
+            fileName: "src/pages/Widgets.tsx",
+            lineNumber: 48,
+            columnNumber: 34
+        },
+        __self: undefined
+    }, error.message), data && /*#__PURE__*/ (0, _preact.h)((0, _preact.Fragment), {
+        __source: {
+            fileName: "src/pages/Widgets.tsx",
+            lineNumber: 50,
+            columnNumber: 9
+        },
+        __self: undefined
+    }, /*#__PURE__*/ (0, _preact.h)("h3", {
+        __source: {
+            fileName: "src/pages/Widgets.tsx",
+            lineNumber: 51,
             columnNumber: 11
         },
         __self: undefined
     }, "Place this Link inside you page content where you want to show widget"), /*#__PURE__*/ (0, _preact.h)((0, _snippet.Snippet), {
-        code: (0, _tripWidget.TripWidget).Link(data.slug, {
+        code: (0, _tripWidget.TripWidget).Link(data.id, {
             withEmbedCode: true
         }),
         __source: {
             fileName: "src/pages/Widgets.tsx",
-            lineNumber: 42,
+            lineNumber: 52,
             columnNumber: 11
         },
         __self: undefined
@@ -4158,7 +4194,7 @@ const Widgets = ()=>{
         class: "preview__title",
         __source: {
             fileName: "src/pages/Widgets.tsx",
-            lineNumber: 43,
+            lineNumber: 53,
             columnNumber: 11
         },
         __self: undefined
@@ -4169,19 +4205,19 @@ const Widgets = ()=>{
         },
         __source: {
             fileName: "src/pages/Widgets.tsx",
-            lineNumber: 44,
+            lineNumber: 54,
             columnNumber: 11
         },
         __self: undefined
     }), /*#__PURE__*/ (0, _preact.h)("h3", {
         __source: {
             fileName: "src/pages/Widgets.tsx",
-            lineNumber: 46,
+            lineNumber: 56,
             columnNumber: 11
         },
         __self: undefined
     }, "Place this Link inside you page content where you want to show code"), /*#__PURE__*/ (0, _preact.h)((0, _snippet.Snippet), {
-        code: (0, _tripWidget.TripWidget).Link(data.slug, {
+        code: (0, _tripWidget.TripWidget).Link(data.id, {
             withEmbedCode: true,
             data: {
                 code: ""
@@ -4189,7 +4225,7 @@ const Widgets = ()=>{
         }),
         __source: {
             fileName: "src/pages/Widgets.tsx",
-            lineNumber: 47,
+            lineNumber: 57,
             columnNumber: 11
         },
         __self: undefined
@@ -4197,7 +4233,7 @@ const Widgets = ()=>{
         class: "preview__title",
         __source: {
             fileName: "src/pages/Widgets.tsx",
-            lineNumber: 48,
+            lineNumber: 58,
             columnNumber: 11
         },
         __self: undefined
@@ -4212,14 +4248,126 @@ const Widgets = ()=>{
         },
         __source: {
             fileName: "src/pages/Widgets.tsx",
-            lineNumber: 49,
+            lineNumber: 59,
+            columnNumber: 11
+        },
+        __self: undefined
+    })), hostError && !isValidatingHost && /*#__PURE__*/ (0, _preact.h)("h4", {
+        __source: {
+            fileName: "src/pages/Widgets.tsx",
+            lineNumber: 62,
+            columnNumber: 42
+        },
+        __self: undefined
+    }, hostError.message), host && /*#__PURE__*/ (0, _preact.h)((0, _preact.Fragment), {
+        __source: {
+            fileName: "src/pages/Widgets.tsx",
+            lineNumber: 64,
+            columnNumber: 9
+        },
+        __self: undefined
+    }, /*#__PURE__*/ (0, _preact.h)("h3", {
+        __source: {
+            fileName: "src/pages/Widgets.tsx",
+            lineNumber: 65,
+            columnNumber: 11
+        },
+        __self: undefined
+    }, "Place this Link inside you page content where you want to show widget"), /*#__PURE__*/ (0, _preact.h)((0, _snippet.Snippet), {
+        code: (0, _hostWidget.HostWidget).Link(host.id, {
+            withEmbedCode: true
+        }),
+        __source: {
+            fileName: "src/pages/Widgets.tsx",
+            lineNumber: 66,
+            columnNumber: 11
+        },
+        __self: undefined
+    }), /*#__PURE__*/ (0, _preact.h)("h4", {
+        class: "preview__title",
+        __source: {
+            fileName: "src/pages/Widgets.tsx",
+            lineNumber: 67,
+            columnNumber: 11
+        },
+        __self: undefined
+    }, "Widget preview:"), /*#__PURE__*/ (0, _preact.h)("div", {
+        class: "preview",
+        dangerouslySetInnerHTML: {
+            __html: (0, _hostWidget.HostWidget).Link(host.id)
+        },
+        __source: {
+            fileName: "src/pages/Widgets.tsx",
+            lineNumber: 68,
+            columnNumber: 11
+        },
+        __self: undefined
+    }), /*#__PURE__*/ (0, _preact.h)("h3", {
+        __source: {
+            fileName: "src/pages/Widgets.tsx",
+            lineNumber: 70,
+            columnNumber: 11
+        },
+        __self: undefined
+    }, "Place this Link inside you page content where you want to show code"), /*#__PURE__*/ (0, _preact.h)((0, _snippet.Snippet), {
+        code: (0, _hostWidget.HostWidget).Link(host.id, {
+            withEmbedCode: true,
+            data: {
+                code: ""
+            }
+        }),
+        __source: {
+            fileName: "src/pages/Widgets.tsx",
+            lineNumber: 71,
+            columnNumber: 11
+        },
+        __self: undefined
+    }), /*#__PURE__*/ (0, _preact.h)("h4", {
+        class: "preview__title",
+        __source: {
+            fileName: "src/pages/Widgets.tsx",
+            lineNumber: 72,
+            columnNumber: 11
+        },
+        __self: undefined
+    }, "Widget preview:"), /*#__PURE__*/ (0, _preact.h)("div", {
+        class: "preview",
+        dangerouslySetInnerHTML: {
+            __html: (0, _hostWidget.HostWidget).Link(host.id, {
+                data: {
+                    code: ""
+                }
+            })
+        },
+        __source: {
+            fileName: "src/pages/Widgets.tsx",
+            lineNumber: 73,
             columnNumber: 11
         },
         __self: undefined
     })));
 };
 
-},{"preact":"26zcy","preact/hooks":"eZN76","src/api/trip":"79o4T","src/components/Snippet/Snippet":"gRvPY","src/config/Routes":"aU9Qo","src/config/Widgets":"2pGEw","src/pages/TripWidget":"8KJcq","5dcd195c0dac97ef":"fS9MB","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"79o4T":[function(require,module,exports) {
+},{"preact":"26zcy","preact/hooks":"eZN76","src/api/host":"kNByL","src/api/trip":"79o4T","src/components/Snippet/Snippet":"gRvPY","src/config/Routes":"aU9Qo","src/config/Widgets":"2pGEw","src/pages/TripWidget":"8KJcq","./HostWidget":"6SNaW","5dcd195c0dac97ef":"fS9MB","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kNByL":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getHostBySlug", ()=>getHostBySlug);
+parcelHelpers.export(exports, "useHostBySlug", ()=>useHostBySlug);
+parcelHelpers.export(exports, "getHostBySlugKey", ()=>getHostBySlugKey);
+var _preactSwr = require("preact-swr");
+var _preactSwrDefault = parcelHelpers.interopDefault(_preactSwr);
+var _fetcher = require("./fetcher");
+const BASE_PATH = `/users`;
+const getHostBySlug = async (slug)=>{
+    if (!slug) return null;
+    return await (0, _fetcher.fetcher)(`${BASE_PATH}/slug/${slug}`);
+};
+const useHostBySlug = (slug, options = {})=>{
+    return (0, _preactSwrDefault.default)(getHostBySlugKey(slug), ()=>getHostBySlug(slug), options);
+};
+const getHostBySlugKey = (slug)=>"trips" + slug;
+
+},{"preact-swr":"bPA2W","./fetcher":"bXfri","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"79o4T":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getTripBySlug", ()=>getTripBySlug);
@@ -4238,7 +4386,64 @@ const useTripBySlug = (slug, options = {})=>{
 };
 const getTripBySlugKey = (slug)=>"trips" + slug;
 
-},{"preact-swr":"bPA2W","./fetcher":"bXfri","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"fS9MB":[function(require,module,exports) {
+},{"preact-swr":"bPA2W","./fetcher":"bXfri","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6SNaW":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "HostWidget", ()=>HostWidget);
+var _preact = require("preact");
+var _button = require("src/components/Button/Button");
+var _routes = require("src/config/Routes");
+var _widgetWrapper = require("src/components/WidgetWrapper/WidgetWrapper");
+var _helper = require("src/utils/helper");
+var _snippet = require("src/components/Snippet/Snippet");
+const Link = (slugOrId, params = {})=>{
+    const link = (0, _routes.getExternalUrl)((0, _routes.hostLink)(slugOrId));
+    return (0, _helper.getSnippetLink)(link, typeof params.data?.code !== "undefined" ? "Embed Code" : "Book Now", params);
+};
+const Widget = ({ matches: { slugOrId , source  }  })=>{
+    return /*#__PURE__*/ (0, _preact.h)((0, _widgetWrapper.WidgetWrapper), {
+        __source: {
+            fileName: "src/pages/HostWidget.tsx",
+            lineNumber: 16,
+            columnNumber: 5
+        },
+        __self: undefined
+    }, /*#__PURE__*/ (0, _preact.h)((0, _button.Button), {
+        href: (0, _routes.getExternalUrl)(`${(0, _routes.hostLink)(slugOrId)}?source=${encodeURIComponent(source)}`),
+        __source: {
+            fileName: "src/pages/HostWidget.tsx",
+            lineNumber: 17,
+            columnNumber: 7
+        },
+        __self: undefined
+    }, "Book Now"));
+};
+const Code = ({ matches: { slugOrId  }  })=>{
+    return /*#__PURE__*/ (0, _preact.h)((0, _widgetWrapper.WidgetWrapper), {
+        __source: {
+            fileName: "src/pages/HostWidget.tsx",
+            lineNumber: 24,
+            columnNumber: 5
+        },
+        __self: undefined
+    }, /*#__PURE__*/ (0, _preact.h)((0, _snippet.Snippet), {
+        code: Link(slugOrId, {
+            withEmbedCode: true
+        }),
+        __source: {
+            fileName: "src/pages/HostWidget.tsx",
+            lineNumber: 25,
+            columnNumber: 7
+        },
+        __self: undefined
+    }));
+};
+const HostWidget = Object.assign(Widget, {
+    Code,
+    Link
+});
+
+},{"preact":"26zcy","src/components/Button/Button":"gRY88","src/config/Routes":"aU9Qo","src/components/WidgetWrapper/WidgetWrapper":"hEMdc","src/utils/helper":"3uqAg","src/components/Snippet/Snippet":"gRvPY","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"fS9MB":[function(require,module,exports) {
 module.exports = require("./helpers/browser/js-loader")(require("./helpers/bundle-url").getBundleURL("6EXJA") + "embed.fd23351f.js" + "?" + Date.now()).catch((err)=>{
     delete module.bundle.cache[module.id];
     throw err;

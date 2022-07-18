@@ -629,7 +629,7 @@ const IFRAME_ATTRIBUTES = {
     }
 })(window);
 
-},{"./config/Routes":"aU9Qo","./utils/helper":"3uqAg","./utils/messenger":"cqgH5","./utils/log":"aMCJ1"}],"aMCJ1":[function(require,module,exports) {
+},{"./config/Routes":"aU9Qo","./utils/helper":"3uqAg","./utils/log":"aMCJ1","./utils/messenger":"cqgH5"}],"aMCJ1":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "log", ()=>log);
