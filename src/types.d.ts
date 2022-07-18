@@ -34,6 +34,11 @@ export type Trip = {
   id: number
 }
 
+export type Host = {
+  slug: string
+  id: number
+}
+
 export type SnippetFunction = ({ slug }: { slug: string }) => string
 export type WidgetComponent = FunctionComponent<{ matches: { slug: string } }> & { Code: Element }
 export type SnippetLinkFunction = (url: string, label: string, params?: SnippetParams) => string
