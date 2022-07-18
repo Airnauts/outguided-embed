@@ -42,7 +42,7 @@ export const Widgets: FunctionComponent<{}> = () => {
           id="hostUrl"
           placeholder="Enter Host Url from outguided.com"
           defaultValue={EXAMPLE_HOST}
-          onInput={({ target }) => setSlug(getHostSlugFromUrl((target as HTMLInputElement)?.value))}
+          onInput={({ target }) => setGuideSlug(getHostSlugFromUrl((target as HTMLInputElement)?.value))}
         ></input>
       </form>
       {error && !isValidating && <h4>{error.message}</h4>}
