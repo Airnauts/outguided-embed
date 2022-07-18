@@ -1,8 +1,6 @@
 import { EMBED_SCRIPT } from 'src/config/Widgets'
 import { SnippetLinkFunction } from 'src/types'
 
-export const escapeRegExp = (string: string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-
 export const getSnippetLink: SnippetLinkFunction = (url, label = 'Powered by outguided.com', { data = {}, withEmbedCode } = {}) => {
   const attributeString = Object.keys({ ...data, widget: '' })
     .map((key) => ` data-og-${key}${data[key] ? `="${data[key]}"` : ''}`)
