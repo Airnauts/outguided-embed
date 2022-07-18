@@ -21,7 +21,7 @@ declare global {
 }
 const IFRAME_STYLES = {
   border: 'none',
-  width: '0px',
+  width: '100%',
   height: '0px',
   'overflow-x': 'hidden',
   'overflow-y': 'hidden',
@@ -116,7 +116,7 @@ const IFRAME_ATTRIBUTES = {
             case 'size':
               const { width, height } = event.data as EmbedSizeMessage
               iframe.style.height = height + 'px'
-              iframe.style.width = width + 'px'
+              // iframe.style.width = width + 'px'
               break
             case 'copy':
               const { text } = event.data as EmbedCopyMessage

@@ -47,7 +47,7 @@ body {
 
 .snippet-preview {
   position: relative;
-  display: inline-block;
+  display: block;
   &--focused {
     .snippet-preview__info {
       opacity: 1;
@@ -85,8 +85,10 @@ body {
   }
 
   &__textarea {
-    width: auto;
+    box-sizing: border-box;
+    width: 100%;
     max-width: 100%;
+    height:auto;
     min-height: 150px;
     cursor: pointer;
     padding: 10px;
@@ -95,12 +97,6 @@ body {
     overflow: hidden;
     &:focus {
       outline: none;
-    }
-    @media only screen and (min-width: 600px) {
-      min-width: 300px;
-    }
-    @media only screen and (min-width: 1200px) {
-      min-width: 500px;
     }
   }
 }

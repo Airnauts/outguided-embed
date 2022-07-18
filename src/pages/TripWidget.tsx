@@ -6,23 +6,23 @@ import { getSnippetLink } from 'src/utils/helper'
 import { Snippet } from 'src/components/Snippet/Snippet'
 import { SnippetParams } from 'src/types'
 
-const Link = (slug: string, params: SnippetParams = {}) => {
-  const link = getExternalUrl(tripLink(slug))
+const Link = (slugOrId: string | number, params: SnippetParams = {}) => {
+  const link = getExternalUrl(tripLink(slugOrId))
   return getSnippetLink(link, typeof params.data?.code !== 'undefined' ? 'Embed Code' : 'Book Now', params)
 }
 
-const Widget: FunctionComponent<{ matches: { slug: string; source: string } }> = ({ matches: { slug, source } }) => {
+const Widget: FunctionComponent<{ matches: { slugOrId: string; source: string } }> = ({ matches: { slugOrId, source } }) => {
   return (
     <WidgetWrapper>
-      <Button href={getExternalUrl(`${tripLink(slug)}?source=${encodeURIComponent(source)}`)}>Book Now</Button>
+      <Button href={getExternalUrl(`${tripLink(slugOrId)}?source=${encodeURIComponent(source)}`)}>Book Now</Button>
     </WidgetWrapper>
   )
 }
 
-const Code: FunctionComponent<{ matches: { slug: string } }> = ({ matches: { slug } }) => {
+const Code: FunctionComponent<{ matches: { slugOrId: string } }> = ({ matches: { slugOrId } }) => {
   return (
     <WidgetWrapper>
-      <Snippet code={Link(slug, { withEmbedCode: true })} />
+      <Snippet code={Link(slugOrId, { withEmbedCode: true })} />
     </WidgetWrapper>
   )
 }

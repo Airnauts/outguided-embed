@@ -41,12 +41,12 @@ export const Widgets: FunctionComponent<{}> = () => {
           <h3>Place this Link inside you page content where you want to show widget</h3>
           <Snippet code={TripWidget.Link(data.slug, { withEmbedCode: true })} />
           <h4 class="preview__title">Widget preview:</h4>
-          <div class="preview" dangerouslySetInnerHTML={{ __html: TripWidget.Link(data.slug) }} />
+          <div class="preview" dangerouslySetInnerHTML={{ __html: TripWidget.Link(data.id) }} />
 
           <h3>Place this Link inside you page content where you want to show code</h3>
           <Snippet code={TripWidget.Link(data.slug, { withEmbedCode: true, data: { code: '' } })} />
           <h4 class="preview__title">Widget preview:</h4>
-          <div class="preview" dangerouslySetInnerHTML={{ __html: TripWidget.Link(data.slug, { data: { code: '' }}) }} />
+          <div class="preview" dangerouslySetInnerHTML={{ __html: TripWidget.Link(data.id, { data: { code: '' } }) }} />
         </Fragment>
       )}
     </div>

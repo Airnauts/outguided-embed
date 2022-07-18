@@ -31,6 +31,7 @@ export type MessageSender = (data: EmbedMessage, options?: Partial<MessageSender
 export type Trip = {
   title: string
   slug: string
+  id: number
 }
 
 export type SnippetFunction = ({ slug }: { slug: string }) => string
