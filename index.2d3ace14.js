@@ -2402,12 +2402,12 @@ parcelHelpers.export(exports, "getEmbedUrl", ()=>getEmbedUrl);
 parcelHelpers.export(exports, "getEmbedSnippetUrl", ()=>getEmbedSnippetUrl);
 parcelHelpers.export(exports, "getExternalUrl", ()=>getExternalUrl);
 var _helper = require("src/utils/helper");
-const TRIP_PAGE = "/experiences/:slug";
-const HOST_PAGE = "/guides/:slug";
-const getTripSlugFromUrl = (url)=>url.match(new RegExp(`^${(0, _helper.escapeRegExp)(getExternalUrl())}${TRIP_PAGE.replace(":slug", "([^/?]+)")}`))?.[1];
-const getHostSlugFromUrl = (url)=>url.match(new RegExp(`^${(0, _helper.escapeRegExp)(getExternalUrl())}${HOST_PAGE.replace(":slug", "([^/?]+)")}`))?.[1];
-const tripLink = (slug)=>TRIP_PAGE.replace(":slug", slug ?? "");
-const hostLink = (slug)=>HOST_PAGE.replace(":slug", slug ?? "");
+const TRIP_PAGE = "/experiences/:slugOrId";
+const HOST_PAGE = "/guides/:slugOrId";
+const getTripSlugFromUrl = (url)=>url.match(new RegExp(`^${(0, _helper.escapeRegExp)(getExternalUrl())}${TRIP_PAGE.replace(":slugOrId", "([^/?]+)")}`))?.[1];
+const getHostSlugFromUrl = (url)=>url.match(new RegExp(`^${(0, _helper.escapeRegExp)(getExternalUrl())}${HOST_PAGE.replace(":slugOrId", "([^/?]+)")}`))?.[1];
+const tripLink = (slugOrId)=>TRIP_PAGE.replace(":slugOrId", slugOrId ? "" + slugOrId : "");
+const hostLink = (slugOrId)=>HOST_PAGE.replace(":slugOrId", slugOrId ? "" + slugOrId : "");
 const getEmbedPath = (path)=>`/embed${path}`;
 const getEmbedSnippetPath = (path)=>`/code${path}`;
 const getEmbedUrl = (path)=>`${"http://localhost:1234"}${path ? `/#${getEmbedPath(path)}` : ""}`;
@@ -2449,11 +2449,11 @@ var _routes = require("src/config/Routes");
 var _widgetWrapper = require("src/components/WidgetWrapper/WidgetWrapper");
 var _helper = require("src/utils/helper");
 var _snippet = require("src/components/Snippet/Snippet");
-const Link = (slug, params = {})=>{
-    const link = (0, _routes.getExternalUrl)((0, _routes.tripLink)(slug));
+const Link = (slugOrId, params = {})=>{
+    const link = (0, _routes.getExternalUrl)((0, _routes.tripLink)(slugOrId));
     return (0, _helper.getSnippetLink)(link, typeof params.data?.code !== "undefined" ? "Embed Code" : "Book Now", params);
 };
-const Widget = ({ matches: { slug , source  }  })=>{
+const Widget = ({ matches: { slugOrId , source  }  })=>{
     return /*#__PURE__*/ (0, _preact.h)((0, _widgetWrapper.WidgetWrapper), {
         __source: {
             fileName: "src/pages/TripWidget.tsx",
@@ -2462,7 +2462,7 @@ const Widget = ({ matches: { slug , source  }  })=>{
         },
         __self: undefined
     }, /*#__PURE__*/ (0, _preact.h)((0, _button.Button), {
-        href: (0, _routes.getExternalUrl)(`${(0, _routes.tripLink)(slug)}?source=${encodeURIComponent(source)}`),
+        href: (0, _routes.getExternalUrl)(`${(0, _routes.tripLink)(slugOrId)}?source=${encodeURIComponent(source)}`),
         __source: {
             fileName: "src/pages/TripWidget.tsx",
             lineNumber: 17,
@@ -2471,7 +2471,7 @@ const Widget = ({ matches: { slug , source  }  })=>{
         __self: undefined
     }, "Book Now"));
 };
-const Code = ({ matches: { slug  }  })=>{
+const Code = ({ matches: { slugOrId  }  })=>{
     return /*#__PURE__*/ (0, _preact.h)((0, _widgetWrapper.WidgetWrapper), {
         __source: {
             fileName: "src/pages/TripWidget.tsx",
@@ -2480,7 +2480,7 @@ const Code = ({ matches: { slug  }  })=>{
         },
         __self: undefined
     }, /*#__PURE__*/ (0, _preact.h)((0, _snippet.Snippet), {
-        code: Link(slug, {
+        code: Link(slugOrId, {
             withEmbedCode: true
         }),
         __source: {
@@ -2588,8 +2588,8 @@ const useEmbedSize = ()=>{
         width: 0,
         height: 0
     });
-    (0, _hooks.useEffect)(()=>{
-        if (!dimension.height && document?.body.scrollHeight) {
+    const onResize = ()=>{
+        if (document?.body.scrollHeight) {
             const height = document?.body.scrollHeight;
             const width = document?.getElementById("root")?.children?.[0]?.scrollWidth;
             if (width && height) setDimension({
@@ -2597,10 +2597,14 @@ const useEmbedSize = ()=>{
                 height
             });
         }
-    }, [
-        document?.body.scrollHeight,
-        dimension.height
-    ]);
+    };
+    (0, _hooks.useEffect)(()=>{
+        onResize();
+        window.addEventListener("resize", onResize);
+        return ()=>{
+            window.removeEventListener("resize", onResize);
+        };
+    });
     return dimension;
 };
 
@@ -4161,7 +4165,7 @@ const Widgets = ()=>{
     }, "Widget preview:"), /*#__PURE__*/ (0, _preact.h)("div", {
         class: "preview",
         dangerouslySetInnerHTML: {
-            __html: (0, _tripWidget.TripWidget).Link(data.slug)
+            __html: (0, _tripWidget.TripWidget).Link(data.id)
         },
         __source: {
             fileName: "src/pages/Widgets.tsx",
@@ -4200,7 +4204,7 @@ const Widgets = ()=>{
     }, "Widget preview:"), /*#__PURE__*/ (0, _preact.h)("div", {
         class: "preview",
         dangerouslySetInnerHTML: {
-            __html: (0, _tripWidget.TripWidget).Link(data.slug, {
+            __html: (0, _tripWidget.TripWidget).Link(data.id, {
                 data: {
                     code: ""
                 }

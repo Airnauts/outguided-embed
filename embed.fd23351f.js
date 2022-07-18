@@ -538,7 +538,7 @@ var _log = require("./utils/log");
 var _messenger = require("./utils/messenger");
 const IFRAME_STYLES = {
     border: "none",
-    width: "0px",
+    width: "100%",
     height: "0px",
     "overflow-x": "hidden",
     "overflow-y": "hidden",
@@ -611,7 +611,6 @@ const IFRAME_ATTRIBUTES = {
                     case "size":
                         const { width , height  } = event.data;
                         iframe.style.height = height + "px";
-                        iframe.style.width = width + "px";
                         break;
                     case "copy":
                         const { text  } = event.data;
@@ -634,7 +633,9 @@ const IFRAME_ATTRIBUTES = {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "log", ()=>log);
-const log = (message, ...optionalParams)=>{};
+const log = (message, ...optionalParams)=>{
+    console.log(message, ...optionalParams);
+};
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["geUin"], null, "parcelRequire7009")
 
