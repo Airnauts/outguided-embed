@@ -6,7 +6,7 @@
     "start": "parcel src/index.html",
     "build": "NODE_ENV=staging parcel build --public-url . src/index.html  && NODE_ENV=staging parcel build --public-url . --no-content-hash src/embed.ts && cp ./src/CNAME ./dist/ ",
     "build:production": "parcel build --public-url . src/index.html && parcel build --public-url . --no-content-hash src/embed.ts && cp ./src/CNAME ./dist/ ",
-    "release": "yarn build && gh-pages -t -d dist"
+    "release": "yarn build:production && gh-pages -t -d dist"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "2.6.2",
